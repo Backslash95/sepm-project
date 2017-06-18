@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:body>
+			<div style="width: 95%; margin-left: auto; margin-right: auto;">
+				<h:outputStylesheet library="css" name="styles.css" />
+
+
+
+				<h:form id="msgpanel">
+
+
+					<p:panel id="studentpanel" style="margin-top:3px!important;margin-bottom:15px!important">
+						<p:growl id="growl" life="2000" />
+
+
+
+						<p:tabView id="msgtab">
+							<p:ajax event="tabChange" listener="#{messageService.tabChange}" update="msgpanel:msgbox" />
+
+							<p:tab title="Inbox(Neu)">
+								<p:scrollPanel mode="native" style="height:200px">
+									<p:dataTable emptyMessage="Es wurden keine Daten gefunden." class="table1" id="datatable5" var="msgs" value="#{messageService.unreadMsgs}">
+										<p:column headerText="Von">
+											<h:outputText value="#{msgs.userIDFrom}" />
+										</p:column>
+										<p:column headerText="Datum">
+											<h:outputText value="#{msgs.date}">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column style="text-align:center" headerText="Ansehen">
+											<p:commandButton action="#{messageService.selectMsg(msgs.msgID)}" update="msgpanel msgpanel:msgbox msgpanel:msgtab" icon="ui-icon-mail-closed" />
+										</p:column>
+									</p:dataTable>
+								</p:scrollPanel>
+
+							</p:tab>
+
+							<p:tab title="Alle Nachrichten">
+								<p:scrollPanel mode="native" style="height:200px">
+									<p:dataTable emptyMessage="Es wurden keine Daten gefunden." class="table1" id="datatable7" var="msgs" value="#{messageService.myMsgs}">
+										<p:column headerText="Von">
+											<h:outputText value="#{msgs.userIDFrom}" />
+										</p:column>
+										<p:column headerText="Datum">
+											<h:outputText value="#{msgs.date}" >
+											<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column style="text-align:center" headerText="Ansehen">
+											<p:commandButton action="#{messageService.setMsgIDtoDisplay(msgs.msgID)}" update="msgpanel:msgbox" icon="ui-icon-mail-open" />
+										</p:column>
+									</p:dataTable>
+								</p:scrollPanel>
+
+							</p:tab>
+
+							<p:tab title="Gesendet">
+
+								<p:scrollPanel mode="native" style="height:200px">
+									<p:dataTable emptyMessage="Es wurden keine Daten gefunden." class="table1" id="datatable6" var="msgs" value="#{messageService.mySentMsgs}">
+										<p:column headerText="An">
+											<h:outputText value="#{msgs.userIDTo}" />
+										</p:column>
+										<p:column headerText="Datum">
+											<h:outputText value="#{msgs.date}" >
+											<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+										<p:column style="text-align:center" headerText="Ansehen">
+											<p:commandButton action="#{messageService.setMsgIDtoDisplay(msgs.msgID)}" update="msgpanel:msgbox" icon="ui-icon-mail-closed" />
+										</p:column>
+									</p:dataTable>
+								</p:scrollPanel>
+
+
+							</p:tab>
+
+							<p:tab title="Neue Nachricht">
+
+
+								<p:panel header="An" toggleable="true" collapsed="false" style="margin-top:3px!important;margin-bottom:15px!important">
+									<p:separator />
+									<p:pickList responsive="true" filterMatchMode="contains" effect="drop" id="pickList" showCheckbox="true" showSourceFilter="true" value="#{pickListViewUser.usernames}" var="usernames"
+										itemLabel="#{usernames}" itemValue="#{usernames}" />
+								</p:panel>
+
+
+								<p:inputTextarea maxlength="200" style="width:99.3%!important" counter="display" rows="10" cols="100" value="#{messageService.msg}" />
+								<div>
+									<h:outputText id="display" />
+									<h:outputText value=" Zeichen verbleiben" />
+								</div>
+								<p:separator />
+								<p:growl id="msg" showDetail="false" escape="false" />
+								<p:commandButton class="ui-button1" icon="ui-icon-arrowthick-1-e" style="font-size:15px!important;" update="msgpanel:studentpanel msgpanel:growl" value="Senden"
+									action="#{messageService.sendToMultipleUsers}" />
+
+
+
+
+							</p:tab>
+						</p:tabView>
+
+						<p:panel id="msgbox" visible="#{messageService.msgIDtoDisplay != -1}" style="margin-top:20px;margin-bottom:20px;">
+							<h3>
+								Von: #{userRepository.findFirstByUsername(messageService.msgToDisplay.userIDFrom).firstName} #{userRepository.findFirstByUsername(messageService.msgToDisplay.userIDFrom).lastName}
+								(#{messageService.msgToDisplay.userIDFrom}) <br /> An: #{userRepository.findFirstByUsername(messageService.msgToDisplay.userIDTo).firstName}
+								#{userRepository.findFirstByUsername(messageService.msgToDisplay.userIDTo).lastName} (#{messageService.msgToDisplay.userIDTo}) <br /> Datum: #{messageService.msgToDisplay.date.toGMTString()}
+							</h3>
+
+							<p:separator />
+							<br />
+							<p:outputLabel value="#{messageService.msgToDisplay.message}" />
+						</p:panel>
+
+
+						<p:separator />
+						<a href="../../secured/welcome.xhtml" class="button">Zurück</a>
+					</p:panel>
+				</h:form>
+
+
+
+
+			</div>
+		</h:body>
+	</ui:define>
+</ui:composition>

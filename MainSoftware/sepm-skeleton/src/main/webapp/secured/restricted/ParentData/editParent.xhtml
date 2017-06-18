@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+			<h:form>
+				<p:panel header="Daten des Elternteils bearbeiten">
+					<p:messages id="message1" autoUpdate="true" closable="true" />
+
+					<p:panel>
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Vorname *" />
+							<p:inputText value="#{editParentController.currentUser.firstName}" style="width:202px"/>
+							<p:outputLabel value="Nachname *" />
+							<p:inputText value="#{editParentController.currentUser.lastName}" style="width:202px"/>
+							<p:outputLabel value="E-Mail * " />
+							<p:inputText value="#{editParentController.currentUser.email}" style="width:202px"/>
+							<p:outputLabel value="Telefonnummer: * " />
+							<p:inputMask value="#{editParentController.currentUser.phone}" mask="(+99) 999-9999999" style="width:202px"/>
+							<p:outputLabel value="Adresse *" />
+							<p:inputText value="#{editParentController.currentUser.address}" style="width:202px"/>
+							<h:outputText value="Geschlecht * " />
+	        				<p:selectOneButton value="#{editParentController.currentUser.sex}">
+	            				<f:selectItem itemLabel="Männlich" itemValue="Männlich" />
+	          					<f:selectItem itemLabel="Weiblich" itemValue="Weiblich" />
+	        				</p:selectOneButton>
+	        				<h:outputText value="Newsletter: " />
+		       				<p:inputSwitch value="#{editParentController.value}" />
+		       				<p:outputLabel value="Passwort * " />
+							<p:password type="password" value="#{editParentController.currentUser.password}" feedback="true" inline="true" style="width:202px"/>
+							<p:outputLabel value="Passwort wiederholen * " />
+							<p:inputText type="password" value="#{editParentController.checkpassword}" style="width:202px"/>
+						</h:panelGrid>
+				
+						<p:separator />
+						<h:outputText value="Foto " />
+					    <p:fileUpload label="Bild aussuchen" uploadLabel="Hochladen" cancelLabel="Abbrechen" fileUploadListener="#{editParentController.handleFileUpload}" mode="advanced" dragDropSupport="true"
+					           update="messages" sizeLimit="5000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+					    <p:growl id="messages" showDetail="true" />
+					    <p:outputLabel value=" " />
+
+						<p:separator />
+						<p:commandButton class="ui-button1" value="Speichern" action="#{editParentController.saveData()}" />
+					</p:panel>
+
+				</p:panel>
+			</h:form>
+
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

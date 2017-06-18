@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:head></h:head>
+		<h:body>
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:form>
+				<p:panel header="New Person Registration">
+					<p:messages id="message1" autoUpdate="true" closable="true" />
+					<h:panelGrid class="sp" columns="2">
+						<p:outputLabel value="Name *" />
+						<p:inputText value="#{newPersonHandler.newPerson.name}" />
+						<p:outputLabel value="E-Mail *" />
+						<p:inputText value="#{newPersonHandler.newPerson.email}" />
+						<p:outputLabel value="Phone *" />
+						<p:inputMask value="#{newPersonHandler.newPerson.phone}"  mask="(+99) 999-9999999" />
+						
+						<h:outputLabel for="multiple" value="Kinder  " />
+        					<p:selectCheckboxMenu id="multiple" value="#{childCheckboxView.selectedNames}" label="Names" multiple="true"
+                              filter="true" filterMatchMode="startsWith">
+            				<f:selectItems value="#{childCheckboxView.names}" />
+        					</p:selectCheckboxMenu>
+        					
+					</h:panelGrid>
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Register" action="#{newPersonHandler.addNewPerson}" />
+					<p:separator />
+					<a href="../../login.xhtml" class="button">Cancel</a>
+				</p:panel>
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>

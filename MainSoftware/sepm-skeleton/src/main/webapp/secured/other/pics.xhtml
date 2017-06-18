@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content" id="uimain">
+			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+
+		<h:form id="gal">
+			<p:panel rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" style="text-align:center;"  header="Bildergallerie">
+				
+				<p:panelGrid style=" margin: 0 auto;" columns="1">
+					<p:fileUpload label="Bild aussuchen" uploadLabel="Hochladen" cancelLabel="Abbrechen" update="gal" fileUploadListener="#{galleryPicController.handleFileUpload}" mode="advanced" dragDropSupport="true" sizeLimit="5000000" fileLimit="1"
+						allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+						<h:panelGrid columns ="2">
+									<h:outputText value="Beschreibung"/>
+			<p:inputTextarea id="field1" maxlength="200" counter="display" rows="2" cols="75" value="#{galleryPicController.desc}" >
+			<f:ajax event="keyup" />
+			</p:inputTextarea>
+						<h:outputText />
+
+						<p:outputLabel />
+						<h:panelGrid columns="2">
+							<h:outputText style="font-size:70%;" id="display" />
+							<h:outputText style="font-size:70%;" value=" Zeichen verbleiben" />
+							
+			</h:panelGrid>
+			
+			</h:panelGrid>
+					<p:galleria rendered="false" value="#{galleryView.images}" var="image" autoPlay="true" panelWidth="700" panelHeight="500" showCaption="true" alt="Image Description for #{image}" title="#{image}">
+
+						<h:link outcome="selectedPic.xhtml">
+							<f:param name="pictureID" value="#{galleryPicService.loadProfilePicByPicName(image).pictureID}" />
+							<p:graphicImage alt="Image Description for #{image}" value="../../../#{image}" width="700px" height="500px" />
+						</h:link>
+						<p:graphicImage alt="Image Description for #{image}" value="../../../#{image}" width="700px" height="500px" />
+
+
+					</p:galleria>
+				</p:panelGrid>
+				
+			</p:panel>
+			
+			<p:panel>
+			<p:panelGrid columns="3">
+			<p:outputLabel value="Bild Suchen">
+			<p:outputLabel styleClass="ui-icon ui-icon-search" style="float:right;margin-left:2px;" />
+			</p:outputLabel>
+			
+			<p:inputText class="ip1" value="#{galleryView.filter}">
+				<f:ajax event="keyup" update="pickList" render="alotpics" />
+			</p:inputText>
+			</p:panelGrid>
+			<p:dataGrid vertical="true" id="alotpics" rendered="true" value="#{galleryView.images}" headerText="Responsive"
+			var="image" itemStyle="text-align:center" responsive="true"
+			columns="3" layout="grid"
+        	rows="12" paginator="true"
+        	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+       		rowsPerPageTemplate="6,12,16">
+			
+				
+				<p:panel header="#{image}" style="text-align:center;">
+				<h:panelGrid columns="1">
+				<h:link outcome="selectedPic.xhtml">
+					<f:param name="pictureID" value="#{galleryPicService.loadProfilePicByPicName(image).pictureID}" />
+					<p:graphicImage alt="Image Description for #{image}" value="../../../../#{image}" width="400px" height="300px" />
+				</h:link>
+			<p:outputLabel value="#{galleryPicService.loadProfilePicByPicName(image).description}" ></p:outputLabel>
+			</h:panelGrid>
+				</p:panel>
+			</p:dataGrid>
+</p:panel>
+
+
+		</h:form>
+		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

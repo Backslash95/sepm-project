@@ -1,0 +1,35 @@
+git remote add origin git@git.uibk.ac.at:qepssepmss2017/ps1_team2.git
+
+git checkout master
+
+git pull
+
+git checkout -b origin/NAME-YOUR-WORKING-BRANCH
+
+git add .
+
+git commit
+
+git push --set-upstream origin origin/NAME-YOUR-WORKING-BRANCH
+
+
+
+-----------------------------------------
+
+Step 1. Fetch and check out the branch for this merge request
+
+
+git fetch origin
+git checkout -b origin/Ahmet origin/origin/Ahmet
+Step 2. Review the changes locally
+
+Step 3. Merge the branch and fix any conflicts that come up
+
+
+git checkout master
+git merge --no-ff origin/Ahmet
+Step 4. Push the result of the merge to GitLab
+
+
+git push origin master
+Tip: You can also checkout merge requests locally by following these guidelines.

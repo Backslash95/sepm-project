@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:form id="contactForm">
+				<p:panel header="Kontaktliste">
+					<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="parent1" var="parent" value="#{contactListController.loadParentContactList()}">
+					    <p:column headerText="Eltern" filterBy="#{parent.firstName} #{parent.lastName}" filterMatchMode="contains">
+					        <h:outputText value="#{parent.firstName} #{parent.lastName}" />
+					    </p:column>
+					 
+					    <p:column headerText="Kinder" filterBy="#{contactListController.convertChildTable(parent.myChildren)}" filterMatchMode="contains">
+					        <h:outputText value="#{contactListController.convertChildTable(parent.myChildren)}" />
+					    </p:column>
+					 
+					    <p:column headerText="Telefonnummer">
+					        <h:outputText value="#{parent.phone}" />
+					    </p:column>
+					 
+					    <p:column headerText="E-Mail">
+					        <h:outputText value="#{parent.email}" />
+					    </p:column>
+					</p:dataTable>
+					
+					<p:separator />
+					
+					<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="persons" var="person" value="#{contactListController.loadPersonContactList()}">
+					    <p:column headerText="Bezugspersonen" filterBy="#{person.name}" filterMatchMode="contains">
+					        <h:outputText value="#{person.name}" />
+					    </p:column>
+					 
+					    <p:column headerText="Kinder" filterBy="#{contactListController.convertChildTable(person.knownChildren)}" filterMatchMode="contains">
+					        <h:outputText value="#{contactListController.convertChildTable(person.knownChildren)}" />
+					    </p:column>
+					 
+					    <p:column headerText="Telefonnummer">
+					        <h:outputText value="#{person.phone}" />
+					    </p:column>
+					 
+					    <p:column headerText="E-Mail">
+					        <h:outputText value="#{person.email}" />
+					    </p:column>
+					    
+					     <p:column headerText="Beziehung">
+					        <h:outputText value="#{person.relation}" />
+					    </p:column>
+					</p:dataTable>
+				</p:panel>
+				<p:separator />
+				<p:panel header="Exportieren">
+	            <h:commandLink immediate="true">                     
+					<p>Eltern-Tabelle drucken.</p>                     
+					<p:printer target="parent1" />                 
+				</h:commandLink>
+				 <h:commandLink immediate="true">                     
+					<p>Bezugspersonen-Tabelle drucken.</p>                     
+					<p:printer target="persons" />                 
+				</h:commandLink>
+	            <h:commandLink immediate="true">
+	                <p>Als PDF-Datei</p>
+	                <p:dataExporter type="pdf" target="parent1 persons" fileName="KontaktListePDF"/>
+	            </h:commandLink>
+	            </p:panel>
+			</h:form>
+		
+	
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

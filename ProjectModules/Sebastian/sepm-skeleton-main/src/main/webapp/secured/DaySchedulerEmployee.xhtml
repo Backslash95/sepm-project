@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+    <ui:define name ="content">
+        <h:form id="DaySchedulerEmployee">
+       		<p:panel header="Angemeldete Kinder">
+	            <p:dataTable id="signedKidsTable" var="day" value="#{Day.kids}">
+	                <p:column headerText="Name">
+	                    <h:outputText value="#{kids.childId}"/>
+	                </p:column>
+	                <p:column headerText="Bring Zeit">
+	                    <h:outputText value="#{kids.dropOffTime}"/>
+	                </p:column>
+	                <p:column headerText="Abholzeit">
+	                    <h:outputText value="#{kids.pickUpTime}"/>
+	                </p:column>
+	                <p:column headerText="Abholperson">
+	                    <h:outputText value="#{kids.pickUpPerson}"/>
+	                </p:column>
+	                <p:column headerText="Mittagessen">
+	                    <h:outputText value="#{kids.lunch}"/>
+	                </p:column>
+	                <p:column headerText="Geburtstag">
+	                    <h:outputText value="#{kids.hasBirthday}"/>
+	                </p:column>
+	            </p:dataTable>
+            </p:panel>
+            
+            
+
+            <p:panel header="Export All Data">
+	            <h:commandLink immediate="true">
+	                <p>Excel</p>
+	                <p:dataExporter type="xls" postProcessor="#{manager.postProcessXLS}"
+	                    target="usersTable" fileName="ActiveUsersExcel" />
+	            </h:commandLink>
+	            <h:commandLink immediate="true">
+	                <p>PDF</p>
+	                <p:dataExporter type="pdf" target="usersTable" fileName="ActiveUsersPDF" />
+	            </h:commandLink>
+        	</p:panel>
+        	
+        	<p:panel header="Ansicht wechseln">			
+				<p:outputLabel for="view" value="Ansicht: " />
+		        <p:selectOneMenu id="view" value="#{selectOneMenuView.view}" style="width:125px">
+		            <f:selectItem itemLabel="Tages-Ansicht" itemValue="dayView" />
+		            <f:selectItem itemLabel="Wochen-Ansicht" itemValue="weekView" />
+		            <f:selectItem itemLabel="Monats-Ansicht" itemValue="monthView" />
+		            <f:selectItem itemLabel="Jahres-Ansicht" itemValue="yearView" />
+        		</p:selectOneMenu>
+        		
+        		<p:outputLabel for="date" value="Datum: " />
+				<p:calendar id="date" value="#{TodaysKidsController.newKid.date}" />            	
+            </p:panel>
+            
+        </h:form>
+    </ui:define>
+</ui:composition>

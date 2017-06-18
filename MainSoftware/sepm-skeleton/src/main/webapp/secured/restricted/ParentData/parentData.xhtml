@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+			<h:form>
+			<p:panel>
+				<p:panel header="Daten des Elternteils">
+				<h:panelGrid columns="2" border="1">
+					<p:outputLabel value="Benutzername " />
+					<p:outputLabel value="#{parentDataController.currentUser.username}" />
+					<p:outputLabel value="Vorname " />
+					<p:outputLabel value="#{parentDataController.currentUser.firstName}" />
+					<p:outputLabel value="Nachname " />
+					<p:outputLabel value="#{parentDataController.currentUser.lastName}" />
+					<p:outputLabel value="E-Mail-Adresse:    " />
+					<p:outputLabel value="#{parentDataController.currentUser.email}" />
+					<p:outputLabel value="Telefonnummer:    " />
+					<p:outputLabel value="#{parentDataController.currentUser.phone}" />
+					<p:outputLabel value="Adresse:  " />
+					<p:outputLabel value="#{parentDataController.currentUser.address}" />
+					<p:outputLabel value="Geschlecht  " />
+					<p:outputLabel value="#{parentDataController.currentUser.sex}" />
+					</h:panelGrid>
+				</p:panel>
+				<p:separator />
+				<p:panel header="Profilbild" toggleable="true" collapsed="true" style="margin-top:3px!important;margin-bottom:15px!important">
+				<p:graphicImage value="../../../#{parentDataController.loadProfilePictrue()}" width="400px" height="400px"/>
+				</p:panel>
+				<p:separator />
+				<p:commandButton class="ui-button1" value="Bearbeiten" action="#{editParentController.setCurrentUser(parentDataController.currentUser)}" />
+			</p:panel>
+			</h:form>
+	
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>						

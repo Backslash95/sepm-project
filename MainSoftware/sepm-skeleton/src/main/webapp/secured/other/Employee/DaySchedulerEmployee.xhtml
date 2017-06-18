@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+                
+    <ui:define name ="content">
+    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+
+
+    
+        <h:form id="DaySchedulerEmployee">
+        
+        	<p:panel id="registeredChilds" header="Angemeldete Kinder" toggleable="true" collapsed="false">
+                <p:outputLabel for="dateForDayView" value="Datum " />
+				<p:calendar id="dateForDayView" value="#{todaysKidsController.calDate}" >
+					<p:ajax event="dateSelect" update="signedKidsTable" render="signedKidsTable" />
+				</p:calendar> 
+				
+				<p:separator />
+				
+                <p:dataTable emptyMessage="Es wurden keine Daten gefunden."  id="signedKidsTable" var="todaysKids" value="#{todaysKidsController.getSignedKids()}">
+                    <p:column headerText="Name" filterBy="#{todaysKidsController.getName(todaysKids.childId)}" filterMatchMode="contains">
+                        <h:outputText value="#{todaysKidsController.getName(todaysKids.childId)}"/>
+                    </p:column>
+                    <p:column headerText="Bringzeit" filterBy="#{todaysKids.dropOffTime}" filterMatchMode="contains">
+                        <h:outputText value="#{todaysKids.dropOffTime}"/>
+                    </p:column>
+                    <p:column headerText="Abholzeit" filterBy="#{todaysKids.pickUpTime}" filterMatchMode="contains">
+                        <h:outputText value="#{todaysKids.pickUpTime}"/>
+                    </p:column>
+                    <p:column headerText="Abholperson">
+                        <h:outputText value="#{todaysKids.pickUpPerson}"/>
+                    </p:column>
+                    <p:column headerText="Mittagessen" filterBy="#{todaysKidsController.kidHasLunch(todaysKids.lunch)}" filterMatchMode="contains">
+                        <h:outputText value="#{todaysKidsController.kidHasLunch(todaysKids.lunch)}"/>
+                    </p:column>
+                    <p:column headerText="Geburtstag">
+                        <h:outputText value="#{todaysKidsController.kidHasBirthday(todaysKids.childId)}"/>
+                    </p:column>
+                    <p:column headerText="Notizen">
+                        <h:outputText value="#{todaysKids.notes}"/>
+                    </p:column>
+                    <p:column exportable="false" style="width:100px;text-align: center" printable="false">
+                        <p:commandButton action="#{todaysKidsController.setChildId(todaysKids.childId)}" icon="ui-button1" title="Notiz hinzufuegen" onclick="PF('editNotes').show();" />
+                        <p:commandButton action="#{todaysKidsController.deleteKidFromDay(todaysKids.childId)}" icon="ui-icon-trash" title="Loeschen" update="DaySchedulerEmployee:signedKidsTable"/>
+                    </p:column>
+                </p:dataTable>
+                <p:separator />
+                <h:commandLink immediate="true">
+	                <p>Als Excel Datei exportieren.</p>
+	                <p:dataExporter type="xls" target="signedKidsTable" fileName="RegistrierteKinderXLS" />
+	            </h:commandLink>
+	            <h:commandLink immediate="true">
+	                <p>Als PDF Datei exportieren.</p>
+	                <p:dataExporter type="pdf" target="signedKidsTable" fileName="RegistrierteKinderPDF" />
+	            </h:commandLink>
+	             <h:commandLink immediate="true">
+    				<p>Tabelle drucken.</p>
+    				<p:printer target="signedKidsTable" />
+				</h:commandLink>
+            </p:panel>
+
+            <p:dialog header="Notiz hinzufuegen" widgetVar="editNotes" modal="true" height="100">
+				<p:inputText binding="#{note}" maxlength="200" />
+				<p:commandButton action="#{todaysKidsController.editKidsNote(note.value)}" icon="ui-icon-disc" title="Speichern" update="DaySchedulerEmployee:signedKidsTable" onclick="PF('editNotes').hide();"/>
+			</p:dialog>            
+      
+      	
+		<p:panel header="Monats-Uebersicht" toggleable="true" collapsed="true">
+			<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">
+		       <p:outputLabel for="month" value="Monat: " />
+		       <p:selectOneMenu id="month" value="#{todaysKidsController.month}" style="width:125px">
+			       <f:selectItem itemLabel="Jänner" itemValue='0' />
+			       <f:selectItem itemLabel="Februar" itemValue='1' />
+			       <f:selectItem itemLabel="März" itemValue='2' />
+			       <f:selectItem itemLabel="April" itemValue='3' />
+			       <f:selectItem itemLabel="Mai" itemValue='4' />
+			       <f:selectItem itemLabel="Juni" itemValue='5' />
+			       <f:selectItem itemLabel="Juli" itemValue='6' />
+			       <f:selectItem itemLabel="August" itemValue='7' />
+			       <f:selectItem itemLabel="Septemer" itemValue='8' />
+			       <f:selectItem itemLabel="Oktober" itemValue='9' />
+			       <f:selectItem itemLabel="November" itemValue='10' />
+			       <f:selectItem itemLabel="Dezember" itemValue='11' />
+			       <p:ajax event="change" update="overviewTable" render="overviewTable"/>
+			       <p:ajax event="change" update="overviewTableYear" render="overviewTableYear"/>
+		        </p:selectOneMenu>
+
+		       <p:outputLabel for="yearForMonth" value="Jahr: " />
+		       <p:selectOneMenu id="yearForMonth" value="#{todaysKidsController.year}" style="width:125px">
+			       <f:selectItem itemLabel="2017" itemValue='2017' />
+			       <f:selectItem itemLabel="2018" itemValue='2018' />
+			       <f:selectItem itemLabel="2019" itemValue='2019' />
+			       <f:selectItem itemLabel="2020" itemValue='2020' />
+			       <f:selectItem itemLabel="2021" itemValue='2021' />
+			       <f:selectItem itemLabel="2022" itemValue='2022' />
+			       <f:selectItem itemLabel="2023" itemValue='2023' />
+			       <f:selectItem itemLabel="2024" itemValue='2024' />
+			       <p:ajax event="change" update="overviewTable" render="overviewTable"/>
+		        </p:selectOneMenu>
+			</h:panelGrid>
+			<p:separator />
+		    <p:dataTable emptyMessage="Es wurden keine Daten gefunden."  id="overviewTable" var="child" value="#{todaysKidsController.getAllKidsMonth()}">
+		        <p:column headerText="Name" filterBy="#{todaysKidsController.getName(child.childID)}" filterMatchMode="contains">
+		            <h:outputText value="#{todaysKidsController.getName(child.childID)}"/>
+		        </p:column>
+		        
+		        <p:column headerText="Anzahl der Anwesenheiten im Monat">
+		            <h:outputText value="#{todaysKidsController.getAmountOfAttendance(child.childID)}"/>
+		        </p:column>
+	
+		        <p:column headerText="Anzahl der Essen im Monat">
+		            <h:outputText value="#{todaysKidsController.getAmountOfLunch(child.childID)}"/>
+		        </p:column>
+		        
+		        <p:column headerText="Gesamtpreis fuer Essen">
+		            <h:outputText value="#{todaysKidsController.getCostOfLunchMonth(child.childID)}"/>
+		        </p:column>
+		       
+		    </p:dataTable>
+		    
+		    <p:separator />
+                <h:commandLink immediate="true">
+	                <p>Als Excel Datei exportieren.</p>
+	                <p:dataExporter type="xls" target="overviewTable" fileName="MonatsuebersichtXLS" />
+	            </h:commandLink>
+	            <h:commandLink immediate="true">
+	                <p>Als PDF Datei exportieren.</p>
+	                <p:dataExporter type="pdf" target="overviewTable" fileName="MonatsuebersichtPDF" />
+	            </h:commandLink>
+	            
+	            <h:commandLink immediate="true">
+       		        <p>Als CSV Datei exportieren.</p>
+		        	<p:dataExporter type="csv" target="overviewTable" fileName="MonatsuebersichtCSV" />
+		    	</h:commandLink>
+		 
+	    </p:panel>
+	    
+	    <p:panel header="Jahres-Uebersicht" toggleable="true" collapsed="true">
+	   		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+		        <p:outputLabel for="yearForYear" value="Jahr: " />
+		        <p:selectOneMenu id="yearForYear" value="#{todaysKidsController.year}" style="width:125px">
+			       <f:selectItem itemLabel="2017" itemValue='2017' />
+			       <f:selectItem itemLabel="2018" itemValue='2018' />
+			       <f:selectItem itemLabel="2019" itemValue='2019' />
+			       <f:selectItem itemLabel="2020" itemValue='2020' />
+			       <f:selectItem itemLabel="2021" itemValue='2021' />
+			       <f:selectItem itemLabel="2022" itemValue='2022' />
+			       <f:selectItem itemLabel="2023" itemValue='2023' />
+			       <f:selectItem itemLabel="2024" itemValue='2024' />
+			       <p:ajax event="change" update="overviewTableYear" render="overviewTableYear"/>
+		        </p:selectOneMenu>
+			</h:panelGrid>
+			<p:separator />
+		    <p:dataTable emptyMessage="Es wurden keine Daten gefunden."  id="overviewTableYear" var="child" value="#{todaysKidsController.getAllKidsYear()}">
+		        <p:column headerText="Name" filterBy="#{todaysKidsController.getName(child.childID)}" filterMatchMode="contains">
+		            <h:outputText value="#{todaysKidsController.getName(child.childID)}"/>
+		        </p:column>
+		        <p:column headerText="Anzahl der Anwesenheiten im Jahr">
+		            <h:outputText value="#{todaysKidsController.getAmountOfAttendanceYear(child.childID)}"/>
+		        </p:column>
+		        <p:column headerText="Anzahl der Essen im Jahr">
+		            <h:outputText value="#{todaysKidsController.getAmountOfLunchYear(child.childID)}"/>
+		        </p:column>
+		        <p:column headerText="Gesamtpreis fuer Essen">
+		            <h:outputText value="#{todaysKidsController.getCostOfLunchYear(child.childID)}"/>
+		        </p:column>
+		        
+		    </p:dataTable>
+		    <p:separator />
+                <h:commandLink immediate="true">
+	                <p>Als Excel Datei exportieren.</p>
+	                <p:dataExporter type="xls" target="overviewTableYear" fileName="JahresuebersichtXLS" />
+	            </h:commandLink>
+	            <h:commandLink immediate="true">
+	                <p>Als PDF Datei exportieren.</p>
+	                <p:dataExporter type="pdf" target="overviewTableYear" fileName="JahresuebersichtPDF" />
+	            </h:commandLink>
+		</p:panel>
+		
+        </h:form>
+    		</div>
+</h:body>
+    </ui:define>
+</ui:composition>

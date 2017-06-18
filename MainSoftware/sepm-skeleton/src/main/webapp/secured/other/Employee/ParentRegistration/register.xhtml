@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:form>
+				<p:panel header="Anlegen eines Elternaccounts">
+					<p:messages id="message1" autoUpdate="true" closable="true" />
+					<h:panelGrid class="sp" columns="2">
+						<p:outputLabel value="Benutzername * "/>
+						<p:inputText value="#{newUserHandler.newUser.username}" style="width:202px"/>
+						<p:outputLabel value="Vorname * " />
+						<p:inputText value="#{newUserHandler.newUser.firstName}" style="width:202px"/>
+						<p:outputLabel value="Nachname * " />
+						<p:inputText value="#{newUserHandler.newUser.lastName}" style="width:202px"/>
+						<p:outputLabel value="E-Mail * " />
+						<p:inputText value="#{newUserHandler.newUser.email}" style="width:202px"/>
+						<p:outputLabel value="Telefonnummer: * " />
+						<p:inputMask value="#{newUserHandler.newUser.phone}" mask="(+99) 999-9999999" style="width:202px"/>
+						<p:outputLabel value="Adresse * " />
+						<p:inputText value="#{newUserHandler.newUser.address}" style="width:202px"/>
+						<h:outputText value="Geschlecht * " />
+        				<p:selectOneButton value="#{newUserHandler.newUser.sex}">
+            				<f:selectItem itemLabel="Männlich" itemValue="Männlich" />
+          					<f:selectItem itemLabel="Weiblich" itemValue="Weiblich" />
+        				</p:selectOneButton>
+        				<h:outputText value="Profilbild " />
+					    <p:fileUpload label="Bild aussuchen" uploadLabel="Hochladen" cancelLabel="Abbrechen" fileUploadListener="#{userGenerator.handleFileUpload}" mode="advanced" dragDropSupport="true"
+					           update="messages" sizeLimit="5000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+					    <p:growl id="messages" showDetail="true" />
+					    <p:outputLabel value=" " />
+						
+					</h:panelGrid>
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Registrieren!" action="#{newUserHandler.addNewUser}" />
+					<p:separator />
+					<a href="../../../../secured/welcome.xhtml" class="button">Abbruch</a>
+				</p:panel>
+			</h:form>
+
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

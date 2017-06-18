@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:head></h:head>
+		<h:body>
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:form>
+			<p:panel>
+				<p:panel header="Kontaktliste">
+				<h:panelGrid class="sp" columns="2" border="1">
+					<p:outputLabel value="Name  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.name}" />
+					<p:outputLabel value="Geschlecht  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.sex}" />
+					<p:outputLabel value="Geburtstag  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.birthdate}">
+						<f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+					</p:outputLabel>
+					<p:outputLabel value="Adresse  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.address}" />
+					<p:outputLabel value="Notfallkontakt  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.emergencyContact}" />
+					<p:outputLabel value="Registrierungsdatum  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.registerDate}" />
+					<p:outputLabel value="Besondere Hinweise  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.otherInformation}" />
+					<p:outputLabel value="Allergien  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.allergies}" />
+					<p:outputLabel value="Abmeldedatum  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.signOutDate}" />
+					<p:outputLabel value="Geschwister  " />
+					<p:outputLabel value="#{childDataSheetController.selectedChild.siblings}" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="Eltern" toggleable="true" collapsed="true" style="margin-top:3px!important;margin-bottom:15px!important">
+					<p:dataTable var="parent" value="#{childDataSheetController.loadParentList()}">
+					    <p:column headerText="Name" >
+					        <h:outputText value="#{parent.firstName} #{parent.lastName}" />
+					    </p:column>
+					     <p:column headerText="E-Mail" >
+					        <h:outputText value="#{parent.email}" />
+					    </p:column>
+					     <p:column headerText="Geschlecht" >
+					        <h:outputText value="#{parent.sex}" />
+					    </p:column>
+					    <p:column headerText="Telefonnummer" >
+					        <h:outputText value="#{parent.phone}" />
+					    </p:column>
+					</p:dataTable>	
+				</p:panel>
+				<p:panel header="Bezugspersonen" toggleable="true" collapsed="true" style="margin-top:3px!important;margin-bottom:15px!important">
+					<p:dataTable var="person" value="#{childDataSheetController.loadPersonList()}">
+					    <p:column headerText="Name" >
+					        <h:outputText value="#{person.name}" />
+					    </p:column>
+					     <p:column headerText="E-Mail" >
+					        <h:outputText value="#{person.email}" />
+					    </p:column>
+					    <p:column headerText="Telefonnummer" >
+					        <h:outputText value="#{person.phone}" />
+					    </p:column>
+					</p:dataTable>	
+				</p:panel>
+				<p:separator />
+				<a href="viewChildren.xhtml" class="button">Back</a>
+			</p:panel>
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>						

@@ -1,0 +1,28 @@
+Das Programm soll für eine einfache Zeiterfassung für Studenten dienen.
+Weiters soll der Proseminarleiter die Möglichkeit haben 
+- sich einzuloggen
+- Studenten zu erstellen
+- Projekte zu erstellen 
+- Studenten Projekten zuweisen
+- Statisikfunktion über geleistete Stunden in einem Projekt einzusehen
+- Statisikfunktion über geleistete Stunden eines Studenten einzusehen
+- Statisikfunktion über geleistete Stunden in einem Arbeitspaket einzusehen
+
+
+Ein Student hat die Möglichkeit
+- sich einzuloggen
+- Arbeitspakete zu erstellen
+- Kommen (Arbeitspaket auswählen) und Gehen zu stempeln
+
+
+Am Ende der Woche bekommt der Proseminarleiter eine Email mit der Anzahl an erbrachten 
+Stunden pro Student und Projektteam.
+
+
+Mögliche Zusatzfeatures:
+- Import von Usern
+- Selbstregistrierung für Studenten
+- Speichern der Daten auch wenn der Server heruntergefahren wird
+- Graphische erweiterung der Statistikfunktionen
+- Statistikfunktion für den Studenten "zur Kontrolle seiner Tätigkeiten"
+- Proseminarleiter bekommt die möglichkeit bereits erfasste Stunden von Studenten zu überarbeiten (falsche Buchungen)

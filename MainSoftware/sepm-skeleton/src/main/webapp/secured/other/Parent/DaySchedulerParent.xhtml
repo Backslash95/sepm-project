@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+                
+    <ui:define name ="content">
+
+        			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+
+    
+    	<p:tabView id="daySchedulerParent">
+    	<p:tab title="Angemeldete Kinder" id="registeredKids">
+        
+        <h:form id="daySchedulerParent1">
+        
+        	
+        	<p:panel id="registeredChilds">
+                <p:outputLabel for="dateForDayView" value="Datum " />
+				<p:calendar id="dateForDayView" value="#{todaysKidsController.calDate}" >
+					<p:ajax event="dateSelect" update="signedKidsTable" render="signedKidsTable" />
+				</p:calendar> 
+				
+				<p:separator />
+				
+                <p:dataTable emptyMessage="Es wurden keine Daten gefunden."  id="signedKidsTable" var="todaysKids" value="#{todaysKidsController.getSignedKidsParent()}">
+                    
+                    <p:column headerText="Name" filterBy="#{todaysKidsController.getName(todaysKids.childId)}" filterMatchMode="contains">
+                        <h:outputText value="#{todaysKidsController.getName(todaysKids.childId)}"/>
+                    </p:column>
+                    <p:column headerText="Bringzeit" filterBy="#{todaysKids.dropOffTime}">
+                        <h:outputText value="#{todaysKids.dropOffTime}"/>
+                    </p:column>
+                    <p:column headerText="Abholzeit" filterBy="#{todaysKids.pickUpTime}">
+                        <h:outputText value="#{todaysKids.pickUpTime}"/>
+                    </p:column>
+                    <p:column headerText="Abholperson">
+                        <h:outputText value="#{todaysKids.pickUpPerson}"/>
+                    </p:column>
+                    <p:column headerText="Mittagessen" filterBy="#{todaysKidsController.kidHasLunch(todaysKids.lunch)}" filterMatchMode="contains">
+                        <h:outputText value="#{todaysKidsController.kidHasLunch(todaysKids.lunch)}"/>
+                    </p:column>
+                    <p:column headerText="Geburtstag">
+                        <h:outputText value="#{todaysKidsController.kidHasBirthday(todaysKids.childId)}"/>
+                    </p:column>
+                    <p:column headerText="Notizen">
+                        <h:outputText value="#{todaysKids.notes}"/>
+                    </p:column>
+                    <p:column exportable="false" style="width:100px;text-align: center">
+                    	<p:commandButton action="#{todaysKidsController.setChildId(todaysKids.childId)}" icon="ui-button1" title="Notiz hinzufuegen" onclick="PF('editNotes').show();" />
+                        <p:commandButton action="#{todaysKidsController.deleteKidFromDay(todaysKids.childId)}" icon="ui-icon-trash" title="Loeschen" update="signedKidsTable"/>
+                    </p:column>
+                </p:dataTable>
+                <p:separator />
+                
+                <h:commandLink immediate="true">
+	                <p>Als Excel Datei exportieren.</p>
+	                <p:dataExporter type="xls" target="signedKidsTable" fileName="RegistrierteKinderXLS" />
+	            </h:commandLink>
+	            <h:commandLink immediate="true">
+	                <p>Als PDF Datei exportieren.</p>
+	                <p:dataExporter type="pdf" target="signedKidsTable" fileName="RegistrierteKinderPDF" />
+	            </h:commandLink>
+	            <h:commandLink immediate="true">
+    				<p>Tabelle drucken.</p>
+    				<p:printer target="signedKidsTable" />
+				</h:commandLink>
+				
+            </p:panel>
+		
+            <p:dialog header="Notiz hinzufuegen" widgetVar="editNotes" modal="true" height="100">
+				<p:inputText binding="#{note}" maxlength="200" />
+				<p:commandButton action="#{todaysKidsController.editKidsNote(note.value)}" icon="ui-icon-disc" title="Speichern" update="signedKidsTable" onclick="PF('editNotes').hide();"/>
+			</p:dialog>            
+    </h:form>
+    </p:tab>
+    
+ 	<p:tab title="Uebersicht" id="overview">
+    <h:form id="childHForm">
+    		<p:panel header="Monats-Uebersicht" toggleable="true" collapsed="true">
+				<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">
+			       <p:outputLabel for="month" value="Monat: " />
+			       <p:selectOneMenu id="month" value="#{todaysKidsController.month}" style="width:125px">
+				       <f:selectItem itemLabel="Jänner" itemValue='0' />
+				       <f:selectItem itemLabel="Februar" itemValue='1' />
+				       <f:selectItem itemLabel="März" itemValue='2' />
+				       <f:selectItem itemLabel="April" itemValue='3' />
+				       <f:selectItem itemLabel="Mai" itemValue='4' />
+				       <f:selectItem itemLabel="Juni" itemValue='5' />
+				       <f:selectItem itemLabel="Juli" itemValue='6' />
+				       <f:selectItem itemLabel="August" itemValue='7' />
+				       <f:selectItem itemLabel="Septemer" itemValue='8' />
+				       <f:selectItem itemLabel="Oktober" itemValue='9' />
+				       <f:selectItem itemLabel="November" itemValue='10' />
+				       <f:selectItem itemLabel="Dezember" itemValue='11' />
+				       <p:ajax event="change" update="overviewTable" render="overviewTable"/>
+				       <p:ajax event="change" update="overviewTableYear" render="overviewTableYear"/>
+			        </p:selectOneMenu>
+
+		       <p:outputLabel for="yearForMonth" value="Jahr: " />
+		       <p:selectOneMenu id="yearForMonth" value="#{todaysKidsController.year}" style="width:125px">
+			       <f:selectItem itemLabel="2017" itemValue='2017' />
+			       <f:selectItem itemLabel="2018" itemValue='2018' />
+			       <f:selectItem itemLabel="2019" itemValue='2019' />
+			       <f:selectItem itemLabel="2020" itemValue='2020' />
+			       <f:selectItem itemLabel="2021" itemValue='2021' />
+			       <f:selectItem itemLabel="2022" itemValue='2022' />
+			       <f:selectItem itemLabel="2023" itemValue='2023' />
+			       <f:selectItem itemLabel="2024" itemValue='2024' />
+			       <p:ajax event="change" update="overviewTable" render="overviewTable"/>
+		        </p:selectOneMenu>
+			</h:panelGrid>
+			<p:separator />
+		    <p:dataTable emptyMessage="Es wurden keine Daten gefunden."  id="overviewTable" var="child" value="#{todaysKidsController.getParentsKids()}">
+		        <p:column headerText="Name" filterBy="#{todaysKidsController.getName(child.childID)}" filterMatchMode="contains">
+		            <h:outputText value="#{todaysKidsController.getName(child.childID)}"/>
+		        </p:column>
+		        
+		        <p:column headerText="Anzahl der Anwesenheiten im Monat">
+		            <h:outputText value="#{todaysKidsController.getAmountOfAttendance(child.childID)}"/>
+		        </p:column>
+	
+		        <p:column headerText="Anzahl der Essen im Monat">
+		            <h:outputText value="#{todaysKidsController.getAmountOfLunch(child.childID)}"/>
+		        </p:column>
+		        
+		        <p:column headerText="Gesamtpreis fuer Essen">
+		            <h:outputText value="#{todaysKidsController.getCostOfLunchMonth(child.childID)}"/>
+		        </p:column>
+		       
+		    </p:dataTable>
+		    
+	        <h:commandLink immediate="true">
+                <p>Als Excel Datei exportieren.</p>
+                <p:dataExporter type="xls" target="overviewTable" fileName="MonatsuebersichtXLS" />
+            </h:commandLink>
+            <h:commandLink immediate="true">
+                <p>Als PDF Datei exportieren.</p>
+                <p:dataExporter type="pdf" target="overviewTable" fileName="MonatsuebersichtPDF" />
+            </h:commandLink>
+            	            <h:commandLink immediate="true">
+      		        <p>Als CSV Datei exportieren.</p>
+	        	<p:dataExporter type="csv" target="overviewTable" fileName="MonatsuebersichtCSV" />
+	    	</h:commandLink>
+	 
+		    
+	    </p:panel>
+	    
+	    <p:panel header="Jahres-Uebersicht" toggleable="true" collapsed="true">
+	   		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+		        <p:outputLabel for="yearForYear" value="Jahr: " />
+		        <p:selectOneMenu id="yearForYear" value="#{todaysKidsController.year}" style="width:125px">
+			       <f:selectItem itemLabel="2017" itemValue='2017' />
+			       <f:selectItem itemLabel="2018" itemValue='2018' />
+			       <f:selectItem itemLabel="2019" itemValue='2019' />
+			       <f:selectItem itemLabel="2020" itemValue='2020' />
+			       <f:selectItem itemLabel="2021" itemValue='2021' />
+			       <f:selectItem itemLabel="2022" itemValue='2022' />
+			       <f:selectItem itemLabel="2023" itemValue='2023' />
+			       <f:selectItem itemLabel="2024" itemValue='2024' />
+			       <p:ajax event="change" update="overviewTableYear" render="overviewTableYear"/>
+		        </p:selectOneMenu>
+			</h:panelGrid>
+			<p:separator />
+		    <p:dataTable emptyMessage="Es wurden keine Daten gefunden."  id="overviewTableYear" var="child" value="#{todaysKidsController.getParentsKids()}">
+		        <p:column headerText="Name" filterBy="#{todaysKidsController.getName(child.childID)}" filterMatchMode="contains">
+		            <h:outputText value="#{todaysKidsController.getName(child.childID)}"/>
+		        </p:column>
+		        <p:column headerText="Anzahl der Anwesenheiten im Monat">
+		            <h:outputText value="#{todaysKidsController.getAmountOfAttendanceYear(child.childID)}"/>
+		        </p:column>
+		        <p:column headerText="Anzahl der Essen im Monat">
+		            <h:outputText value="#{todaysKidsController.getAmountOfLunchYear(child.childID)}"/>
+		        </p:column>
+		        <p:column headerText="Gesamtpreis fuer Essen">
+		            <h:outputText value="#{todaysKidsController.getCostOfLunchYear(child.childID)}"/>
+		        </p:column>
+		        
+		    </p:dataTable>
+		    <h:commandLink immediate="true">
+                <p>Als Excel Datei exportieren.</p>
+                <p:dataExporter type="xls" target="overviewTableYear" fileName="JahresuebersichtXLS" />
+            </h:commandLink>
+            <h:commandLink immediate="true">
+                <p>Als PDF Datei exportieren.</p>
+                <p:dataExporter type="pdf" target="overviewTableYear" fileName="JahresuebersichtPDF" />
+            </h:commandLink>
+		</p:panel>
+      	
+        </h:form>
+        </p:tab>
+
+        <p:tab title="Kind anmelden" id="registerChild">
+        <h:form id="registerChildsNew">
+        	<p:panel id="insertSeveralChilds">
+            	<h:panelGrid columns="2" columnClasses="firstColumn">
+            		<p:outputLabel for="date" value="Datum "/>
+						<p:calendar id="date" value="#{todaysKidsController.calDate}" required="true">
+						<p:ajax event="dateSelect" update="registerDates" render="registerDates" />
+					</p:calendar>
+            	</h:panelGrid>
+
+   				<p:dataTable emptyMessage=""  id="registerDates" var="registerDates" value="#{todaysKidsController.getMondayDate()}" styleClass="borderless">
+       				<p:column width="20">
+        				<p:selectBooleanCheckbox value="#{todaysKidsController.monday}" id="monday"/> <br />
+				      	<p:selectBooleanCheckbox value="#{todaysKidsController.tuesday}" id="tuesday"/> <br />
+				      	<p:selectBooleanCheckbox value="#{todaysKidsController.wednesday}" id="wednesday"/> <br />
+				      	<p:selectBooleanCheckbox value="#{todaysKidsController.thursday}" id="thursday"/> <br />
+				      	<p:selectBooleanCheckbox value="#{todaysKidsController.friday}" id="friday"/> <br />
+				      	<p:selectBooleanCheckbox value="#{todaysKidsController.saturday}" id="saturday"/> <br />
+       				</p:column>
+       				<p:column>
+             			<h:outputText value="#{todaysKidsController.getMondayDate()}"> <f:convertDateTime pattern="EEEEEEEE, dd.MM.yyyy" /> </h:outputText> <br />
+             			<h:outputText value="#{todaysKidsController.getTuesdayDate()}"> <f:convertDateTime pattern="EEEEEEEE, dd.MM.yyyy" /> </h:outputText> <br />
+             			<h:outputText value="#{todaysKidsController.getWednesdayDate()}"> <f:convertDateTime pattern="EEEEEEEE, dd.MM.yyyy" /> </h:outputText> <br />
+             			<h:outputText value="#{todaysKidsController.getThursdayDate()}"> <f:convertDateTime pattern="EEEEEEEE, dd.MM.yyyy" /> </h:outputText> <br />
+             			<h:outputText value="#{todaysKidsController.getFridayDate()}"> <f:convertDateTime pattern="EEEEEEEE, dd.MM.yyyy" /> </h:outputText> <br />
+             			<h:outputText value="#{todaysKidsController.getSaturdayDate()}"> <f:convertDateTime pattern="EEEEEEEE, dd.MM.yyyy" /> </h:outputText> <br />
+           			</p:column>
+           		</p:dataTable>    
+           		
+            	<p:separator />
+            	
+            	<p:dataTable emptyMessage=""  id="timeTable" var="time" value="#{crecheSettingsController.getBeginDropOffTime()}" styleClass="borderless">
+       				<p:column width="20">
+						<p:outputLabel value= "Bringzeit von " />
+             			<h:outputText value="#{crecheSettingsController.getBeginDropOffTime()}" />
+             			<p:outputLabel value= " - " />
+             			<h:outputText value="#{crecheSettingsController.getEndDropOffTime()}" />  
+             			<p:outputLabel value= "Uhr. Abholzeit von " />
+             			<h:outputText value="#{crecheSettingsController.getBeginPickUpTime()}" />  
+             			<p:outputLabel value= " - " />
+             			<h:outputText value="#{crecheSettingsController.getEndPickUpTime()}" />
+             			<p:outputLabel value= "Uhr." />    
+           			</p:column>
+           		</p:dataTable> 
+            	
+				<h:panelGrid columns="2" columnClasses="firstColumn">
+					<p:outputLabel value="Kind" />
+                	<p:selectOneMenu id="child" value="#{todaysKidsController.childIdFromName}" required="true">
+                	    <f:selectItem itemLabel="Kind auswaehlen" itemValue="" />
+            	    	<f:selectItems value="#{todaysKidsController.getKids()}" />
+        			</p:selectOneMenu>
+					<p:outputLabel value="Bringzeit " />
+					<p:inputMask value="#{todaysKidsController.dropOffTimeToDisplay}" mask="99:99" required="true" id="dropOffTime"/>
+					<p:outputLabel value="Abholzeit " />
+					<p:inputMask value="#{todaysKidsController.pickUpTimeToDisplay}" mask="99:99" required="true" id="pickUpTime"/>
+					<p:outputLabel value="Mittagessen " />
+					<p:selectBooleanCheckbox value="#{todaysKidsController.lunch}" id="lunch"/>
+					<p:outputLabel value="Abhol-Person " />
+                	<p:selectOneMenu id="pickUpPerson" value="#{todaysKidsController.acquaintance}" required="true">
+                	    <f:selectItem itemLabel="Person auswaehlen" itemValue="" />
+            	    	<f:selectItems value="#{todaysKidsController.getAcquaintances()}" />
+        			</p:selectOneMenu>
+				</h:panelGrid>
+				<p:separator />
+				<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Speichern" action="#{todaysKidsController.addDate()}" 
+					update="insertSeveralChilds daySchedulerParent" id="saveChild"/>
+			</p:panel> 
+    	</h:form>
+    	</p:tab>
+        
+        <p:tab title="Kalender" id="calendar">
+        <p:panel>
+		 	<h:panelGrid columnClasses="value" styleClass="centered">         
+		        <p:schedule id="schedule" value="#{calendarViewDS.lazyModel}" widgetVar="myschedule" timeZone="GMT+2" locale="ger" rightHeaderTemplate="month, agendaWeek, agendaDay" />
+		 	</h:panelGrid>
+		</p:panel>
+		</p:tab>
+		</p:tabView>
+ 
+        <script type="text/javascript">
+		    PrimeFaces.locales['ger'] = {
+		        closeText: 'schließen',
+		        prevText: 'zurück',
+		        nextText: 'weiter',
+		        currentText: 'heute',
+		        monthNames: ['Jänner','Februar','März','April','Mai','Juni',
+		            'Juli','August','September','Oktober','November','Dezember'],
+		        monthNamesShort: ['Jan','Feb','Mar','Apr','Mai','Jun','Jul',
+		            'Aug','Sept','Okt','Nov','Dez'],
+		        dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+		        dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+		        dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+		        weekHeader: 'Wo',
+		        firstDay: 1,
+		        isRTL: false,
+		        showMonthAfterYear: false,
+		        yearSuffix: '',
+		        month: 'Monat',
+		        week: 'Woche',
+		        day: 'Tag',
+		        allDayText : 'Ganzer Tag'
+		    };
+		</script>
+
+
+		<style type="text/css">
+		    .value {
+		        width: 1000px;
+		    }
+		    .fc-event-time{
+		    display:none;	
+		    }
+		    .firstColumn {
+       		width: 150px;
+  			}
+  			.centered {
+			margin:0 auto;
+			}
+			.ui-datatable.borderless thead th,
+			.ui-datatable.borderless tbody,
+			.ui-datatable.borderless tbody tr,
+			.ui-datatable.borderless tbody td {
+   			 border: none !important;
+   			 background: none !important;
+			}
+		</style>
+		
+		    			
+        		</div>
+</h:body>
+		
+    </ui:define>
+</ui:composition>

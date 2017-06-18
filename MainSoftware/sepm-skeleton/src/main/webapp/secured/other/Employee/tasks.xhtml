@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content" id="uimain">
+	<h:head></h:head>
+	<h:body>
+	<div  style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+  
+	 <p:tabView id="mainView">
+	 <p:tab id="firsttab" title="Aufgaben verwalten">
+		<p:panel style="margin-bottom:20px" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}">
+
+			<h:form id="newTaskPage4">
+				
+				<p:commandButton id="createTaskButton" value="Neue Aufgabe anlegen" update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" icon="ui-icon-plus" oncomplete="PF('eventDialog0').show();" />
+
+
+
+				<p:dialog  widgetVar="eventDialog0" header="Aktion auswählen" modal="true" showEffect="clip" hideEffect="clip">
+					<h:panelGrid columns="1">
+						<p:commandButton id="selectTaskType1" style="width:350px" action="#{taskHandler.setSingleDaySelected('TRUE')}" update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3"
+							oncomplete="PF('eventDialog').show();PF('eventDialog0').hide();" value="Einmalige Aufgabe" />
+						<p:commandButton id="selectTaskType2" style="width:350px" action="#{taskHandler.setSingleDaySelected('FALSE')}" update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3"
+							oncomplete="PF('eventDialog').show();PF('eventDialog0').hide();" value="Aufgabe über einen Zeitraum" />
+					</h:panelGrid>
+				</p:dialog>
+			</h:form>
+			<h:form id="newTaskPage2">
+
+				<p:dialog  widgetVar="eventDialog" id="msgdiag" modal="true" header="Neue Aufgabe" resizable="false" visible="#{taskHandler.dialogEnabled}">
+					<p:messages id="message1" closable="true" />
+					<p:ajax event="close" listener="#{taskHandler.windowClosed}" />
+					<h:panelGrid columns="3">
+						<p:outputLabel value="Aufabenbezeichnung " />
+						<p:inputText id="desc" value="#{taskHandler.newTask.name}" required="true" requiredMessage="Bezeichnung erforderlich!" />
+						<h:outputLabel>
+							<p:message for="desc" style="color:red" />
+						</h:outputLabel>
+
+						<p:outputLabel value="Beschreibung " />
+						<p:inputTextarea id="descLong" maxlength="200" counter="display" rows="10" cols="30" value="#{taskHandler.newTask.description}" />
+						<h:outputText />
+
+						<p:outputLabel />
+						<h:panelGrid columns="2">
+							<h:outputText style="font-size:70%;" id="display" />
+							<h:outputText style="font-size:70%;" value=" Zeichen verbleiben" />
+						</h:panelGrid>
+					</h:panelGrid>
+
+					<h:panelGrid columns="3">
+						<p:outputLabel value="Anzahl Personen " />
+						<p:inputText id="workers" value="#{taskHandler.newTask.amountOfWorkers}" required="true" requiredMessage="Bitte tragen Sie die Anzahl der benötigten Arbeiter ein!"
+							validatorMessage="Muss größer gleich 1 sein!">
+							<f:validateLongRange minimum="1" />
+						</p:inputText>
+						<p:message for="workers" />
+
+						<p:outputLabel value="Zu erledigen bis " rendered="#{taskHandler.singleDaySelected}" />
+						<p:calendar id="dueto" value="#{taskHandler.newTask.deadline}" pattern="dd-MM-yyyy" mask="true" rendered="#{taskHandler.singleDaySelected}" required="#{taskHandler.singleDaySelected}"
+							requiredMessage="Datum erforderlich!">
+							<f:convertDateTime type="date" pattern="dd-MM-yyyy" />
+						</p:calendar>
+						<p:message for="dueto" rendered="#{taskHandler.singleDaySelected}" />
+
+						<p:outputLabel value="Von " rendered="#{!taskHandler.singleDaySelected}" />
+						<p:calendar id="startD" value="#{taskHandler.newTask.startDate}" pattern="dd-MM-yyyy" mask="true" rendered="#{!taskHandler.singleDaySelected}" required="#{!taskHandler.singleDaySelected}"
+							requiredMessage="Start erforderlich!">
+							<f:convertDateTime type="date" pattern="dd-MM-yyyy" />
+						</p:calendar>
+						<p:message for="startD" rendered="#{!taskHandler.singleDaySelected}" />
+
+						<p:outputLabel value="Bis " rendered="#{!taskHandler.singleDaySelected}" />
+						<p:calendar id="endD" value="#{taskHandler.newTask.endDate}" pattern="dd-MM-yyyy" mask="true" rendered="#{!taskHandler.singleDaySelected}" required="#{!taskHandler.singleDaySelected}"
+							requiredMessage="Ende erfoderlich!">
+							<f:convertDateTime type="endD" pattern="dd-MM-yyyy" />
+						</p:calendar>
+						<p:message for="endD" rendered="#{!taskHandler.singleDaySelected}" />
+
+						<p:outputLabel value="Zeitraum für Erinnerung (Tage) " />
+						<p:inputText id="timeSpan" value="#{taskHandler.newTask.timeSpan}" required="true" requiredMessage="Bitte trages Sie eine Erinnerungszeitspanne ein!"
+							validatorMessage="Muss größer gleich 1 sein!">
+							<f:validateLongRange minimum="1" />
+						</p:inputText>
+						<h:outputLabel>
+							<p:message for="timeSpan" style="color:red" />
+						</h:outputLabel>
+					</h:panelGrid>
+					<p:separator />
+					<p:commandButton id="submitCreateTask" style="margin-top:10px" icon="ui-icon-check" class="ui-button1"
+					value="Erstellen" action="#{taskHandler.saveNewTask}" update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" />
+
+				</p:dialog>
+
+			</h:form>
+		</p:panel>
+
+
+
+
+		<h:form id="newTaskPage1">
+		<f:event type="preRenderView" listener="#{taskView.loadTasks}" />
+			<p:panel header="Alle Aufgaben" style="margin-bottom:20px" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" toggleable="true">
+				<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="taskTable" reflow="true" rows="5" paginator="true" var="task" value="#{taskView.tasks}">
+					<p:column filterBy="#{task.name}" filterMatchMode="contains" headerText="Aufgabe">
+						<h:outputText value="#{task.name}" />
+					</p:column>
+					<p:column sortBy="#{task.deadline.time}" headerText="Zu erledigen bis">
+						<h:outputText value="#{task.deadline}" >
+						<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Anzahl Personen">
+						<h:outputText value="#{task.amountOfWorkers}" />
+					</p:column>
+					<p:column headerText="Status" id="stateSort" sortBy="#{task.taskState}">
+						<h:outputText value="#{task.taskState}" />
+					</p:column>
+					<p:column style="width:70px;text-align:center" headerText="Info">
+						<p:commandButton style="margin-top:10px" icon="ui-icon-note" class="ui-button1"
+						 update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" action="#{taskHandler.setSelectedTask(task)}"
+							oncomplete="PF('taskinfo').show();" />
+					</p:column>
+					<p:column style="width:70px;text-align:center" headerText="Erledigen">
+						<p:commandButton rendered="#{task.taskState == 'ASSIGNED'}" style="margin-top:10px" icon="ui-icon-check"
+						class="ui-button1" update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3"
+							action="#{taskHandler.setSelectedTask(task)}" oncomplete="PF('doneWindow').show();" />
+					</p:column>
+					<p:column style="width:80px;text-align:center" headerText="Zuweisen">
+						<p:commandButton id="assignButton1" rendered="#{task.taskState == 'OPEN'}" action="#{taskHandler.loadTask2(task.taskID)}"
+						update="mainView:newTaskPage1:msgdiag5 mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3"
+							oncomplete="PF('asTask1').show();" icon="ui-icon-suitcase" />
+					</p:column>
+					<p:column style="width:80px;text-align:center" headerText="Löschen">
+						<p:commandButton rendered="#{task.taskState == 'OPEN'}" action="#{taskHandler.setSelectedTask(task)}"
+						update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3"
+							oncomplete="PF('deleteWindow').show();" icon="ui-icon-trash" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:dialog resizeable="true" widgetVar="asTask1" id="msgdiag5" modal="true" header="Aufgabe zuweisen" width="1200" height="500" resizable="false" visible="#{taskHandler.dialogEnabled3}">
+					<p:ajax event="close" listener="#{taskHandler.windowClosed}" />
+				
+				<h:panelGrid columns="2">
+					<p:panel>
+					<p:messages id="message6" autoUpdate="true" closable="true" />
+					<h:panelGrid columns="1">
+						<p:outputLabel value="Aufabenbezeichnung: #{taskHandler.selectedTask.name}" />
+						<p:outputLabel value="Anzahl Personen: #{taskHandler.selectedTask.amountOfWorkers}" />
+						<p:outputLabel value="Zu erledigen bis: #{taskHandler.selectedTask.deadline}" >
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</p:outputLabel>
+						<p:panel header="Eltern zuweisen">
+							<p:pickList filterMatchMode="contains" effect="drop" id="pickList2" showCheckbox="true" showTargetFilter="true" showSourceFilter="true" value="#{parentPickListController.currentUsernames}" var="usernames" itemLabel="#{usernames}"
+								itemValue="#{usernames}">
+								<p:ajax event="transfer" listener="#{parentPickListController.showTargetList(taskHandler.selectedTask.amountOfWorkers)}"
+								update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3 " />
+							</p:pickList>
+						</p:panel>
+					</h:panelGrid>
+					<p:separator />
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" id="assignTasksButton1" value="Zuweisen" action="#{taskHandler.assignTask}" update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" />
+				</p:panel>
+			<p:panel  header="Eltern ohne Aufgaben" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" collapsed="false" toggleable="true">
+				<p:dataTable  emptyMessage="Es wurden keine Daten gefunden." id="lazyparents2" var="par" value="#{userService.parentsWithoutTask()}">
+					<p:column headerText="Benutzername">
+						<h:outputText value="#{par.username}" />
+					</p:column>
+					<p:column headerText="Vorname">
+						<h:outputText value="#{par.firstName}" />
+					</p:column>
+					<p:column headerText="Nachname">
+						<h:outputText value="#{par.lastName}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			</h:panelGrid>
+				
+				
+				</p:dialog>
+
+				<p:dialog widgetVar="deleteWindow" header="#{taskHandler.selectedTask.name}" modal="true" showEffect="clip" hideEffect="clip">
+					<h:panelGrid columns="3">
+						<h:outputText value="Sind Sie sicher, dass Sie die Aufgabe löschen wollen?" />
+						<p:commandButton style="margin-top:10px" action="#{taskHandler.deleteTask}" icon="ui-icon-circle-check" oncomplete="PF('deleteWindow').hide();"
+						update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" />
+						<p:commandButton style="margin-top:10px" icon="ui-icon-circle-close" oncomplete="PF('deleteWindow').hide();" />
+					</h:panelGrid>
+				</p:dialog>
+
+
+				<p:dialog id="doneWindowid" widgetVar="doneWindow" header="#{taskHandler.selectedTask.name}" modal="true" showEffect="clip" hideEffect="clip">
+					<h:panelGrid columns="3">
+						<h:outputText value="Sind Sie sicher, dass Sie die Aufgabe als erledigt markieren wollen?" />
+						<p:commandButton style="margin-top:10px" action="#{taskHandler.removeTask}" icon="ui-icon-circle-check" oncomplete="PF('doneWindow').hide();"
+						update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" />
+						<p:commandButton style="margin-top:10px" icon="ui-icon-circle-close" oncomplete="PF('doneWindow').hide();" />
+					</h:panelGrid>
+				</p:dialog>
+
+				<p:dialog widgetVar="taskinfo" header="#{taskHandler.selectedTask.name}" modal="true" showEffect="clip" hideEffect="clip" width="600">
+					<h:panelGrid columns="1">
+						<h:outputText value="#{taskHandler.selectedTask.description}" />
+						<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="taskTable1" var="users" value="#{taskHandler.selectedTask.userSet}">
+
+							<p:column headerText="Name">
+								<h:outputText value="#{users.firstName} #{users.lastName}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{users.username}" />
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+				</p:dialog>
+			</p:panel>
+
+		</h:form>
+
+</p:tab>
+<p:tab title="Offene Aufgaben">
+		<h:form id="newTaskPage3">
+
+			<p:panel header="Offene Aufgaben" style="margin-bottom:20px" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" collapsed="false" toggleable="true">
+				<p:dataTable reflow="true" rows="5" paginator="true" emptyMessage="Es wurden keine Daten gefunden." id="taskTableOpen" var="task" value="#{taskHandler.openTasks}">
+					<p:column headerText="Aufgabe">
+						<h:outputText value="#{task.name}" />
+					</p:column>
+					<p:column headerText="Zu erledigen bis">
+						<h:outputText value="#{task.deadline}" >
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Anzahl Personen">
+						<h:outputText value="#{task.amountOfWorkers}" />
+					</p:column>
+					<p:column style="width:80px;text-align:center" headerText="Zuweisen">
+						<p:commandButton action="#{taskHandler.loadTask(task.taskID)}" update="mainView:newTaskPage3:msgdiag1 mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" oncomplete="PF('asTask5').show();" icon="ui-icon-suitcase" />
+					</p:column>
+				</p:dataTable>
+				<p:dialog widgetVar="asTask5" id="msgdiag1" modal="true" header="Aufgabe zuweisen" resizable="false" rendered="true" visible="#{taskHandler.dialogEnabled2}" width="1200" height="500">
+					<p:ajax event="close" listener="#{taskHandler.windowClosed}" />
+					<p:messages autoUpdate="true" closable="true" />
+					
+					<h:panelGrid columns="2">
+					<p:panel>
+					<h:panelGrid columns="1">
+						<p:outputLabel value="Aufabenbezeichnung: #{taskHandler.selectedTask.name}" />
+						<p:outputLabel value="Anzahl Personen: #{taskHandler.selectedTask.amountOfWorkers}" />
+						<p:outputLabel value="Zu erledigen bis: #{taskHandler.selectedTask.deadline}" >
+										<f:convertDateTime pattern="dd-MM-yyyy" />
+						</p:outputLabel>
+						
+						<p:panel header="Eltern zuweisen">
+							<p:pickList filterMatchMode="contains" id="pickList1" effect="drop" showCheckbox="true" showTargetFilter="true" showSourceFilter="true" value="#{parentPickListController.currentUsernames}" var="usernames" itemLabel="#{usernames}"
+								itemValue="#{usernames}">
+								<p:ajax event="transfer" listener="#{parentPickListController.showTargetList(taskHandler.selectedTask.amountOfWorkers)}"
+								update="pickList1" />
+							</p:pickList>
+						</p:panel>
+					</h:panelGrid>
+					<p:separator />
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Zuweisen" action="#{taskHandler.assignTask}"
+					update="mainView:newTaskPage1 mainView:newTaskPage2 mainView:newTaskPage3" />
+							</p:panel>
+							<p:panel  header="Eltern ohne Aufgaben" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" collapsed="false" toggleable="true">
+				<p:dataTable  emptyMessage="Es wurden keine Daten gefunden." id="lazyparents2" var="par" value="#{userService.parentsWithoutTask()}">
+					<p:column headerText="Benutzername">
+						<h:outputText value="#{par.username}" />
+					</p:column>
+					<p:column headerText="Vorname">
+						<h:outputText value="#{par.firstName}" />
+					</p:column>
+					<p:column headerText="Nachname">
+						<h:outputText value="#{par.lastName}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			</h:panelGrid>
+				
+				
+				
+				</p:dialog>
+				</p:panel>
+				</h:form>
+				</p:tab>
+ </p:tabView>
+
+		
+		
+		
+		</div>
+		</h:body>
+	</ui:define>
+</ui:composition>

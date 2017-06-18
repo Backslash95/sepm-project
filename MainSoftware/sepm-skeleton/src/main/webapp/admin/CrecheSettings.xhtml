@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+                
+    <ui:define name ="content">
+    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+
+        <h:form id="crecheSettings">
+        
+        	<p:panel id="settings" header="Allgemeine Einstellungen" >
+  
+				<h:panelGrid columns="2" columnClasses="firstColumn">
+					<p:outputLabel value="Mittagessen-Preis " />
+                	<p:inputNumber id="price" value="#{crecheSettingsController.lunchPrice}" symbol=" EURO" symbolPosition="s" 
+                               decimalSeparator="," thousandSeparator="."> 
+                    </p:inputNumber>  
+                    
+					<p:outputLabel value="Bringzeit-Beginn " />
+					<p:inputMask value="#{crecheSettingsController.beginDropOffTime}" mask="99:99" required="true" />
+					<p:outputLabel value="Bringzeit-Ende " />
+					<p:inputMask value="#{crecheSettingsController.endDropOffTime}" mask="99:99" required="true" />
+					<p:outputLabel value="Abholzeit-Beginn " />
+					<p:inputMask value="#{crecheSettingsController.beginPickUpTime}" mask="99:99" required="true" />
+					<p:outputLabel value="Abholzeit-Ende " />
+					<p:inputMask value="#{crecheSettingsController.endPickUpTime}" mask="99:99" required="true" />
+					
+					<p:outputLabel value="Stichtag der Anmeldung (in Tagen) " />
+					<p:inputText id="deadl" value="#{crecheSettingsController.deadline}" />
+
+				</h:panelGrid>
+
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Speichern" action="#{crecheSettingsController.saveNewSettings()}" 
+					id="saveSettings"/>
+			
+            </p:panel>
+
+        </h:form>
+    </div>
+</h:body>
+    </ui:define>
+</ui:composition>

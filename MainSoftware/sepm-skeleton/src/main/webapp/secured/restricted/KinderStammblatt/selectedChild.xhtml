@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:body>
+			<div style="width: 95%; margin-left: auto; margin-right: auto;">
+				<h:outputStylesheet library="css" name="styles.css" />
+
+
+
+				<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+
+				<p:panel id="mainPanel">
+
+					<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="childData" var="child" value="#{childDataSheetController.selectedChild}">
+						<p:column headerText="Name">
+							<h:outputText value="#{child.name}" />
+						</p:column>
+						<p:column headerText="Geschlecht  ">
+							<h:outputText value="#{child.sex}" />
+						</p:column>
+						<p:column headerText="Geburtstag  ">
+							<h:outputText value="#{child.birthdate}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Adresse  ">
+							<h:outputText value="#{child.address}" />
+						</p:column>
+						<p:column headerText="Notfallkontakt  ">
+							<h:outputText value="#{child.emergencyContact}" />
+						</p:column>
+						<p:column headerText="Registrierungs- datum  ">
+							<h:outputText value="#{child.registerDate}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Besondere Hinweise  ">
+							<h:outputText value="#{child.otherInformation}" />
+						</p:column>
+						<p:column headerText="Allergien  ">
+							<h:outputText value="#{child.allergies}" />
+						</p:column>
+						<p:column headerText="Abmeldedatum  ">
+							<h:outputText value="#{child.givenSignOutDate}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Deaktivierungs- datum  ">
+							<h:outputText value="#{child.signOutDate}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Geschwister  ">
+							<h:outputText value="#{child.siblings}" />
+						</p:column>
+					</p:dataTable>
+					<p:separator />
+					<p:panel header="Bild des ausgewählten Kindes" toggleable="true" collapsed="true" style="margin-top:3px!important;margin-bottom:15px!important">
+						<p:graphicImage value="../../../#{childDataSheetController.loadImagePath()}" width="400px" height="400px" />
+					</p:panel>
+					<p:separator />
+					<p:panel header="Eltern" toggleable="true" collapsed="true" style="margin-top:3px!important;margin-bottom:15px!important">
+						<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="parentTable" var="parent" value="#{childDataSheetController.loadParentList()}">
+							<p:column headerText="Name">
+								<h:outputText value="#{parent.firstName} #{parent.lastName}" />
+							</p:column>
+							<p:column headerText="E-Mail">
+								<h:outputText value="#{parent.email}" />
+							</p:column>
+							<p:column headerText="Geschlecht">
+								<h:outputText value="#{parent.sex}" />
+							</p:column>
+							<p:column headerText="Telefonnummer">
+								<h:outputText value="#{parent.phone}" />
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					<p:separator />
+					<p:panel header="Bezugspersonen" toggleable="true" collapsed="true" style="margin-top:3px!important;margin-bottom:15px!important">
+						<h:form id="persons">
+
+
+
+							<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="personTable" var="person" value="#{childDataSheetController.loadPersonList()}">
+								<p:column headerText="Bild" style="width:80px;">
+									<p:graphicImage value="../../../../#{person.pictureReference}" width="70px" height="70px" />
+								</p:column>
+								<p:column headerText="Name">
+									<h:outputText value="#{person.name}" />
+								</p:column>
+								<p:column headerText="E-Mail">
+									<h:outputText value="#{person.email}" />
+								</p:column>
+								<p:column headerText="Telefonnummer">
+									<h:outputText disabled="#{!childCheckboxView.buttonEnabled}" value="#{person.phone}" />
+								</p:column>
+								<p:column headerText="Beziehung">
+									<h:outputText value="#{person.relation}" />
+								</p:column>
+
+								<p:column style="width:80px;text-align:center" headerText="Bearbeiten">
+									<p:commandButton update=":persons:userEditDialog" oncomplete="PF('userEditDialog').show();" icon="ui-icon-check">
+										<f:setPropertyActionListener value="#{person}" target="#{editPersonController.currentPerson}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="width:80px;text-align:center" headerText="Löschen">
+									<p:commandButton action="#{editPersonController.setCurrentPerson(person)}" update="persons" oncomplete="PF('deleteWindow').show();" icon="ui-icon-trash" />
+								</p:column>
+							</p:dataTable>
+
+
+
+							<p:dialog widgetVar="deleteWindow" header="#{editPersonController.currentPerson.name}" modal="true" showEffect="clip" hideEffect="clip">
+								<h:panelGrid columns="3">
+									<h:outputText value="Sind Sie sicher, dass Sie die Bezugsperson löschen wollen?" />
+									<p:commandButton style="margin-top:10px" action="#{editPersonController.removePerson}" icon="ui-icon-circle-check" oncomplete="PF('deleteWindow').hide();" update="persons personTable" />
+									<p:commandButton style="margin-top:10px" icon="ui-icon-circle-close" oncomplete="PF('deleteWindow').hide();" />
+								</h:panelGrid>
+							</p:dialog>
+
+
+							<p:dialog header="Bezugsperson bearbeiten" id="userEditDialog" widgetVar="userEditDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+								<p:ajax event="close" update="persons" resetValues="true" />
+								<p:outputPanel id="userData" rendered="#{not empty editPersonController.currentPerson}">
+
+									<p:graphicImage id="nicepic" value="../../../../#{editPersonController.currentPerson.pictureReference}" style="text_align:center;display: block; margin: 0px auto;" width="140px" height="140px" />
+
+									<p:separator />
+									<h:panelGrid columns="2">
+										<p:outputLabel for="firstName" value="Name: " />
+										<p:outputLabel id="firstName" value="#{editPersonController.currentPerson.name}" />
+										<p:outputLabel for="email" value="E-Mail: " />
+										<p:inputText id="email" value="#{editPersonController.currentPerson.email}" required="true" />
+										<p:outputLabel for="phone" value="Telefon: " />
+										<p:inputMask id="phone" value="#{editPersonController.currentPerson.phone}" mask="+99? 999 9999999" required="true" />
+										<p:outputLabel for="rel" value="Beziehung: " />
+										<p:inputText id="rel" value="#{editPersonController.currentPerson.relation}" required="true" />
+									</h:panelGrid>
+									<p:separator />
+									<p:messages id="mes2" showDetail="true" autoUpdate="true" closable="true" />
+									<p:panel header="Neues Bild" toggleable="true" collapsed="true">
+										<p:fileUpload label="Bild aussuchen" uploadLabel="Hochladen" cancelLabel="Abbrechen" fileUploadListener="#{editPersonController.handleFileUpload}" mode="advanced" dragDropSupport="true"
+											 update="mes2 nicepic" sizeLimit="5000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+									</p:panel>
+									<p:separator />
+									<h:panelGrid columns="3">
+										<p:commandButton value="Speichern" action="#{editPersonController.doSavePerson()}" oncomplete="if (!args.validationFailed){PF('userEditDialog').hide()}" update="personTable userData" />
+										<p:commandButton value="Neuladen" action="#{editPersonController.doReloadPerson()}" update="userData" />
+										<p:commandButton value="Abbruch" onclick="PF('userEditDialog').hide()" />
+									</h:panelGrid>
+								</p:outputPanel>
+							</p:dialog>
+
+
+
+						</h:form>
+					</p:panel>
+					<p:separator />
+
+					<h:form id="childFormID">
+						<p:commandButton class="ui-button1" value="Kind Bearbeiten" action="#{editChildDataSheetController.setSelectedChild(childDataSheetController.selectedChild)}" />
+
+						<p:growl id="message" showDetail="true" />
+
+						<p:commandButton rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" style="float: right;" value="Abmelden" actionListener="#{childDataSheetController.deregister()}" update="message">
+							<p:confirm header="Confirmation" message="Sind sie sicher, dass sie das Kind VOLLSTÄNDIG von der Kinderkrippe abmelden wollen?" icon="ui-icon-alert" />
+						</p:commandButton>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<h:panelGroup style="display:block; text-align:center">
+								<p:commandButton value="Ja" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check">
+									<f:ajax event="click" update="childData" render="childData" />
+								</p:commandButton>
+								<p:commandButton value="Nein" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+							</h:panelGroup>
+						</p:confirmDialog>
+					</h:form>
+					<p:separator />
+					<a href="viewChildren.xhtml" class="button">Zurück</a>
+				</p:panel>
+
+				<h:form>
+					<p:panel id="Export" header="Exportieren" style="margin-top:25px;">
+						<h:commandLink immediate="true">
+							<p>Als PDF-Datei</p>
+							<p:dataExporter type="pdf" target="childData parentTable :persons:personTable" fileName="KinderStammblattPDF" />
+						</h:commandLink>
+					</p:panel>
+				</h:form>
+
+			</div>
+		</h:body>
+	</ui:define>
+</ui:composition>

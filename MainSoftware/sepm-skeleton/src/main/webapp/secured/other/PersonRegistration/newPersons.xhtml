@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content" id="uimain">
+	<h:head></h:head>
+	<h:body>
+	<div  style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+  
+		<p:panel>
+
+
+		<h:form id="newTaskPage1">
+	
+			<p:panel header="Alle Aufgaben" style="margin-bottom:20px" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" toggleable="true">
+				<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="taskTable" var="person" value="#{personRepository.findByActivated('FALSE')}">
+					<p:column headerText="Bild" style="width:80px;">
+						<p:graphicImage
+						value="../../../../#{person.pictureReference}" width="70px" height="70px" />
+					</p:column>
+					<p:column headerText="Bezugsperson">
+						<h:outputText value="#{person.name}" />
+					</p:column>
+					<p:column headerText="Erstellt von">
+						<h:outputText value="#{person.createUser.firstName} #{person.createUser.lastName} (#{person.createUser.username})" />
+					</p:column>
+					<p:column headerText="Erstellt am">
+						<h:outputText value="#{person.createDate}" >
+										<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Betroffene Kinder">
+						<h:outputText value="#{contactListController.convertChildTable(person.knownChildren)}" />
+					</p:column>
+					<p:column style="width:80px;text-align:center" headerText="Aktivieren">
+						<p:commandButton  style="margin-top:10px" icon="ui-icon-check" class="ui-button1" update="newTaskPage1"
+							action="#{editPersonController.setCurrentPerson(person)}" oncomplete="PF('doneWindow').show();" />
+					</p:column>
+					<p:column style="width:80px;text-align:center" headerText="Löschen">
+						<p:commandButton  action="#{editPersonController.setCurrentPerson(person)}" update="newTaskPage1"
+							oncomplete="PF('deleteWindow').show();" icon="ui-icon-trash" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:dialog widgetVar="deleteWindow" header="#{editPersonController.currentPerson.name}" modal="true" showEffect="clip" hideEffect="clip">
+					<h:panelGrid columns="3">
+						<h:outputText value="Sind Sie sicher, dass Sie die Bezugsperson löschen wollen?" />
+						<p:commandButton style="margin-top:10px" action="#{editPersonController.removePerson}" icon="ui-icon-circle-check" oncomplete="PF('deleteWindow').hide();" update="newTaskPage1" />
+						<p:commandButton style="margin-top:10px" icon="ui-icon-circle-close" oncomplete="PF('deleteWindow').hide();" />
+					</h:panelGrid>
+				</p:dialog>
+
+
+				<p:dialog id="doneWindowid" widgetVar="doneWindow" header="#{editPersonController.currentPerson.name}" modal="true" showEffect="clip" hideEffect="clip">
+					<h:panelGrid columns="3">
+						<h:outputText value="Sind Sie sicher, dass Sie die Bezugsperson aktivieren wollen?" />
+						<p:commandButton style="margin-top:10px" action="#{editPersonController.enablePerson}" icon="ui-icon-circle-check" oncomplete="PF('doneWindow').hide();" update="newTaskPage1" />
+						<p:commandButton style="margin-top:10px" icon="ui-icon-circle-close" oncomplete="PF('doneWindow').hide();" />
+					</h:panelGrid>
+				</p:dialog>
+
+			</p:panel>
+
+		</h:form>
+
+	
+		
+		</p:panel>
+		</div>
+		</h:body>
+	</ui:define>
+</ui:composition>

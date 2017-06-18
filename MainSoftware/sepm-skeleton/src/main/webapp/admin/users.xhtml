@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+    <ui:define name ="content">
+    
+    				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+ 	<p:panel header="Benutzerverwaltung">
+        <h:form id="userForm">
+            <p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="usersTable" var="user" value="#{userListController.users}">
+                <p:column headerText="Benutzername">
+                    <h:outputText value="#{user.username}"/>
+                </p:column>
+                <p:column headerText="Name">
+                    <h:outputText value="#{user.firstName}"/>
+                </p:column>
+                <p:column headerText="Nachname">
+                    <h:outputText value="#{user.lastName}"/>
+                </p:column>
+                <p:column headerText="Rollen">
+                    <h:outputText value="#{user.roles}" />
+                </p:column>
+                <p:column headerText="Zugang aktiviert">
+                    <h:selectBooleanCheckbox value="#{user.enabled}" disabled="true"/>
+                </p:column>
+                <p:column headerText="Inaktives Konto">
+                    <h:selectBooleanCheckbox value="#{user.inactive}" disabled="true"/>
+                </p:column>
+                <p:column style="width:100px;text-align: center">
+                    <p:commandButton update=":userForm:userEditDialog" oncomplete="PF('userEditDialog').show()" icon="ui-icon-note" title="Edit">
+                        <f:setPropertyActionListener value="#{user}" target="#{userDetailController.user}" />
+                    </p:commandButton>
+                    <p:commandButton rendered="#{user.username != sessionInfoBean.currentUserName}" action="#{userDetailController.doDeleteUser}" icon="ui-icon-trash" title="Delete" update=":userForm:usersTable">
+                        <f:setPropertyActionListener value="#{user}" target="#{userDetailController.user}" />
+                        <p:confirm header="Achtung" message="Sind Sie sicher, dass sie den Nutzer entfernen wollen?." icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:dialog header="Benutzer bearbeiten" id="userEditDialog" widgetVar="userEditDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="userData" rendered="#{not empty userDetailController.user}">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel for="username" value="Benutzername: " />
+                        <p:inputText id="username" value="#{userDetailController.user.username}" disabled="true"/>
+                    </h:panelGrid>
+                    <p:separator />
+                    <h:panelGrid columns="2">
+                        <p:outputLabel for="firstName" value="Name: " />
+                        <p:inputText id="firstName" value="#{userDetailController.user.firstName}"/>
+                        <p:outputLabel for="firstName" value="Nachname: " />
+                        <p:inputText id="lastName" value="#{userDetailController.user.lastName}"/>
+                        <p:outputLabel for="email" value="E-Mail: " />
+                        <p:inputText id="email" value="#{userDetailController.user.email}"/>
+                        <p:outputLabel for="phone" value="Telefon: " />
+                        <p:inputMask id="phone" value="#{userDetailController.user.phone}" mask="+99? 999 9999999"/>
+                    </h:panelGrid>
+                    	<p:separator />
+						
+								<h:panelGrid columns="3">
+									<p:outputLabel value="Als Elternteil setzten/entfernen" />
+									<p:commandButton class="ui-button1" style="width:50px!important" icon="ui-icon-check" title="Add as Parent" action="#{userDetailController.makeParent()}" update=":userForm:usersTable" />
+									<p:commandButton class="ui-button1" style="width:50px!important" icon="ui-icon-close" title="Delete as Parent" action="#{userDetailController.removeParent()}" update=":userForm:usersTable" />
+							
+						
+                    
+								
+									<p:outputLabel value="Als Mitarbeiter setzten/entfernen" />
+									<p:commandButton class="ui-button1" style="width:50px!important" icon="ui-icon-check" title="Add as Employee" action="#{userDetailController.makeEmployee()}" update=":userForm:usersTable" />
+									<p:commandButton class="ui-button1" style="width:50px!important" icon="ui-icon-close" title="Delete as Employee" action="#{userDetailController.removeEmployee()}" update=":userForm:usersTable" />
+							
+					
+								
+									<p:outputLabel value="Als Admin setzten/entfernen" />
+									<p:commandButton class="ui-button1" style="width:50px!important" icon="ui-icon-check" title="Add as Admin" action="#{userDetailController.makeAdmin()}" update=":userForm:usersTable" />
+									<p:commandButton class="ui-button1" style="width:50px!important" icon="ui-icon-close" title="Delete as Admin"
+										rendered="#{userDetailController.user.username != 'admin' and sessionInfoBean.currentUserName == 'admin'}" action="#{userDetailController.removeAdmin()}" update=":userForm:usersTable" />
+								</h:panelGrid>
+							
+						<p:separator />
+                    <h:panelGrid columns="2">
+                        <p:outputLabel for="enabled" rendered="#{userDetailController.user.username != sessionInfoBean.currentUserName}" value="Inaktives Konto: " />
+                        <p:selectBooleanCheckbox rendered="#{userDetailController.user.username != sessionInfoBean.currentUserName}" id="enabled" value="#{userDetailController.user.inactive}"/>
+             
+                        <p:outputLabel for="enabled2" rendered="#{userDetailController.user.username != sessionInfoBean.currentUserName}" value="Zugang aktiv: " />
+                        <p:selectBooleanCheckbox rendered="#{userDetailController.user.username != sessionInfoBean.currentUserName}" id="enabled2" value="#{userDetailController.user.enabled}"/>
+                    </h:panelGrid>
+                    <p:separator />
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="Speichern" action="#{userDetailController.doSaveUser()}" oncomplete="PF('userEditDialog').hide()" update=":userForm:usersTable"/>
+                        <p:commandButton value="Neuladen" action="#{userDetailController.doReloadUser()}" update=":userForm:userData"/>
+                        <p:commandButton value="Abbruch" onclick="PF('userEditDialog').hide()"/>
+                    </h:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="300">
+                <p:commandButton value="Ja" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="Nein" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            </h:form>
+           <h:form id="newempl">
+            <!-- NEW USER -->
+			<p:panel header="Mitarbeiter anlegen" rendered="#{sessionInfoBean.hasRole('ADMIN')}">
+				<div style="height:30px">
+					<p:commandButton value="Neu" oncomplete="PF('userNewDialog').show()" title="New"/>
+				</div>
+			</p:panel>
+			<p:dialog header="New User" id="userNewDialog" widgetVar="userNewDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+				<p:outputPanel id="newUserPanel" rendered="true">
+					<h:panelGrid columns="3">
+						<p:outputLabel for="newUsername" value="Benutzername " />
+						<p:inputText id="newUsername" value="#{inputTextCacheBean.username}" required="true" />
+						<p:message for="newUsername" />
+						
+						<p:outputLabel for="newFirstName" value="Name: " />
+						<p:inputText id="newFirstName" value="#{inputTextCacheBean.firstName}" required="true"/>
+						<p:message for="newFirstName" />
+						
+						<p:outputLabel for="newLastName" value="Nachname: " />
+						<p:inputText id="newLastName" value="#{inputTextCacheBean.lastName}" required="true" />
+						<p:message for="newLastName" />
+						
+						<p:outputLabel for="newPassword" value="Passwort: " />
+						<p:password feedback="true" id="newPassword" value="#{inputTextCacheBean.password}" required="true" >
+						<f:validateLength minimum = "6" />
+						</p:password>
+						<p:message for="newPassword" />
+					
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="3">
+						<p:commandButton value="Speichern" 
+										 actionListener="#{userService.createEmployee(inputTextCacheBean.username, inputTextCacheBean.firstName, inputTextCacheBean.lastName, inputTextCacheBean.password)}"
+										 oncomplete="if(!args.validationFailed){PF('userNewDialog').hide()}" 
+										 update=":userForm:usersTable newUserPanel"/>
+						<p:commandButton value="Abbruch" oncomplete="PF('userNewDialog').hide()"/>
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog> 
+			<!-- NEW USER -->
+
+
+  
+     </h:form>	
+     </p:panel>
+        		</div>
+</h:body>
+    </ui:define>
+</ui:composition>

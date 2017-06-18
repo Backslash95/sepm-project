@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+			    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+	<h:form>
+	<p:commandButton value="a" action="#{notifyView.send}" />
+	</h:form>
+	<p:growl widgetVar="growl" showDetail="true" />
+    <p:socket onMessage="handleMessage" channel="/#{deviceBean.device.macAddress}" autoConnect="true" widgetVar='subscriber'/>
+
+    <script type="text/javascript">
+    function handleMessage(facesmessage) {
+        facesmessage.severity = 'info';
+
+
+    PF('growl').show([facesmessage]);
+    }
+    </script>
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

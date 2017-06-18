@@ -1,0 +1,25 @@
+Command line instructions
+
+
+Git global setup
+
+git config --global user.name "Ahmet Aspir"
+git config --global user.email "ahmet.aspir@student.uibk.ac.at"
+
+Create a new repository
+
+git clone git@git.uibk.ac.at:csat17631/TimeTracker.git
+cd TimeTracker
+touch README.md
+git add README.md
+git commit -m "add README"
+git push -u origin master
+
+Existing folder or Git repository
+
+cd existing_folder
+git init
+git remote add origin git@git.uibk.ac.at:csat17631/TimeTracker.git
+git add .
+git commit
+git push -u origin master

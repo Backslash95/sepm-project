@@ -1,0 +1,38 @@
+Git
+
+/*Repo auf git erstellen*/
+Adrian:
+	1.	git init 																				// im Ordner wo das Repo gespeichert wird
+	2.	git clone https://git.uibk.ac.at/c7031080/sepm-skeleton									// Demo Skeleton projekt auf lokale maschine ziehen
+	3.	git remote set-url origin git@git.uibk.ac.at:adrian.natter/SemesterprojektGruppe1.git	// Remote host von Michael Brunner auf Adrian ändern
+		git remote -v																			// zum überprüfen ob richtige remote url gesetzt
+	4.	git add .																				// geänderte files in staging area schreiben
+	5. 	git commit -m "beispieltext"															// änderungen aus staging area in lokales repository schreiben	
+	6. 	git push																				// änderungen aus lokalem repository in remote repository schreiben
+
+Developer:
+	1.	git init																				// im Ordner wo das Repo gespeichert wird
+	2.	git clone https://git.uibk.ac.at/adrian.natter/SemesterprojektGruppe1.git 				// Skeleton projekt auf lokale maschine ziehen
+		git remote -v																			// prüfen auf richtigen remote!
+	3.	git add .																				// geänderte files in staging area schreiben
+	4. 	git commit -m "beispieltext"															// änderungen aus staging area in lokales repository schreiben	
+	5. 	git push																				// änderungen aus lokalem repository in remote repository schreiben
+
+
+Falls mehrere Leute (A, B) die selbe Datei bearbeiten, ist pushen nur mehr
+für einen möglich, den schnelleren (zb. A). 
+
+A pusht die Datei ins Remote Repo, versucht nun B zu pushen bekommt er 
+einen "Konflikt error". 
+
+B muss jetz
+zuerst vom Remote Repo pullen, die gepullte Datei (Datei von A) mit seiner 
+vergleichen (im schlechtesten Fall Line by Line), ergänzen und dann die
+gemergte Datei ins Repo pushen. 
+
+In meinem Fall wurde die selbe Datei die von Adrian und mir geändert wurde
+beim pullen (von mir) automatisch mit meiner Datei (lokal) gemerged, 
+allerdings mit zusätzlichen git Informationen in der Datei (Zeile die sich 
+unterscheidet, Hashwerte usw...).
+Als ich die Datei bereinigt, Adrians und meine Zeile geprüft habe, war
+pushen wieder möglich.

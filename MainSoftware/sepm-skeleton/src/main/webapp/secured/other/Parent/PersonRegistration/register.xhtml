@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:form>
+				<p:panel header="New Person Registration" id="newpers">
+					<p:messages id="message1" autoUpdate="true" closable="true" />
+					<h:panelGrid class="sp" columns="2">
+						<p:outputLabel value="Name *" />
+						<p:inputText value="#{newPersonHandler.newPerson.name}" />
+		
+						
+						<p:outputLabel value="E-Mail *" />
+						<p:inputText value="#{newPersonHandler.newPerson.email}" />
+		
+						
+						<p:outputLabel value="Telefon *" />
+						<p:inputMask value="#{newPersonHandler.newPerson.phone}"  mask="(+99) 999-9999999" />
+						
+						<p:outputLabel value="Beziehung zum Kind *" />
+						<p:inputMask value="#{newPersonHandler.newPerson.relation}" />
+			
+						
+						<h:outputLabel for="multiple" value="Kinder  " />
+        					<p:selectCheckboxMenu id="multiple" value="#{childCheckboxView.selectedNames}" label="Namen" required="true" multiple="true"
+                              filter="true" filterMatchMode="startsWith">
+            				<f:selectItems value="#{childCheckboxView.names}" />
+        					</p:selectCheckboxMenu>
+       				
+        				<h:outputText value="Profilbild " />
+					    <p:fileUpload label="Bild aussuchen" uploadLabel="Hochladen" cancelLabel="Abbrechen" fileUploadListener="#{personGenerator.handleFileUpload}" mode="advanced" dragDropSupport="true"
+					           update="message1" sizeLimit="5000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+					   
+					    <p:outputLabel value=" " />
+        					
+					</h:panelGrid>
+					
+					  
+			
+					
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Anmelden" action="#{newPersonHandler.addNewPerson}" update="newpers"/>
+					<p:separator />
+					<a href="../../../welcome.xhtml" class="button">Abbruch</a>
+				</p:panel>
+			</h:form>
+
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

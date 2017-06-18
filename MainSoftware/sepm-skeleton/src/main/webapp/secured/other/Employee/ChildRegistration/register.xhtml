@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:outputStylesheet library="css" name="styles.css" />
+			<h:form enctype="multipart/form-data" id="childreg">
+				<p:panel header="Registrierung eines Kindes">
+					<p:messages id="message1" autoUpdate="true" closable="true" />
+					<h:panelGrid class="sp" columns="2">
+						<p:outputLabel value="Name *" />
+						<p:inputText value="#{newChildHandler.newChild.name}" style="width:202px"/>
+						<p:outputLabel value="Geburtstag *" />
+						<p:inputMask value="#{newChildHandler.newChild.birthdate}" mask="99-99-9999" style="width:202px">
+							<f:convertDateTime pattern="dd-MM-yyyy"/>  
+						</p:inputMask>
+						<p:outputLabel value="Adresse *" />
+						<p:inputText value="#{newChildHandler.newChild.address}" style="width:202px"/>
+						<p:outputLabel value="Notfallkontakt *" />
+						<p:inputText value="#{newChildHandler.newChild.emergencyContact}" style="width:202px"/>
+						<h:outputText value="Geschlecht *" />
+        				<p:selectOneButton value="#{newChildHandler.newChild.sex}">
+            				<f:selectItem itemLabel="Männlich" itemValue="Männlich"/>
+          					<f:selectItem itemLabel="Weiblich" itemValue="Weiblich" />
+        				</p:selectOneButton>
+	        			<h:outputText value="Foto " />
+					    <p:fileUpload label="Bild aussuchen" uploadLabel="Hochladen" cancelLabel="Abbrechen" fileUploadListener="#{childGenerator.handleFileUpload}" mode="advanced" dragDropSupport="true"
+					           update="messages" sizeLimit="5000000" fileLimit="1" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+					    <p:growl id="messages" showDetail="true" />
+					    <p:outputLabel value=" " />
+        				<p:outputLabel value="Geschwister  " />
+						<p:inputText value="#{newChildHandler.newChild.siblings}" style="width:202px"/>
+						<p:outputLabel value="Allergien  " />
+						<p:inputText value="#{newChildHandler.newChild.allergies}" style="width:202px"/>
+						<p:outputLabel value="Abmeldedatum  " />
+						<p:inputMask value="#{newChildHandler.newChild.givenSignOutDate}" mask="99-99-9999" style="width:202px">
+							<f:convertDateTime pattern="dd-MM-yyyy"/>  
+						</p:inputMask>
+						<p:outputLabel value="Sonstige Hinweise  " />
+						<p:inputText value="#{newChildHandler.newChild.otherInformation}" style="width:202px"/>
+						<h:outputLabel for="multiple" value="Bezugspersonen  " />
+        					<p:selectCheckboxMenu id="multiple" value="#{checkboxView.selectedNames}" label="Namen" multiple="true"
+                              filter="true" filterMatchMode="contains">
+            				<f:selectItems value="#{checkboxView.names}" />
+        					</p:selectCheckboxMenu>
+					</h:panelGrid>
+					<p:panel header="Zuteilen der Eltern">
+					<p:growl id="msg" showDetail="true" escape="false" />
+					<p:panel>
+					</p:panel>
+					<p:separator />
+					<p:pickList showSourceFilter="true" effect="drop" responsive="true" id="pickList" value="#{parentPickListController.currentUsernames}" var="usernames" itemLabel="#{usernames}" itemValue="#{usernames}" >
+					<p:ajax event="transfer" listener="#{parentPickListController.showTargetList(2)}" update="pickList" />
+					</p:pickList>
+					</p:panel>
+					<p:commandButton style="margin-top:10px" icon="ui-icon-check" class="ui-button1" value="Registrieren!" action="#{newChildHandler.addNewChild}" />
+					<p:separator />
+					<a href="../../../welcome.xhtml" class="button">Abbruch</a>
+				</p:panel>
+			</h:form>
+
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

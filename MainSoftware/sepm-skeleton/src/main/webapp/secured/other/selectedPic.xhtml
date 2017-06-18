@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+
+		<h:body>
+			<div style="width: 95%; margin-left: auto; margin-right: auto;">
+				<h:outputStylesheet library="css" name="styles.css" />
+
+
+				<h:form>
+					<f:metadata>
+
+						<f:viewAction action="#{galleryView.load(param['pictureID'])}" />
+					</f:metadata>
+
+
+
+					<p:panel style="text-align:center" header="#{galleryView.galleryPic.pictureReference}">
+						<p:panelGrid style=" margin: 0 auto;" columns="1" border="1">
+							<p:graphicImage alt="Image Description for #{galleryView.galleryPic.pictureReference}" value="../../../../#{galleryView.galleryPic.pictureReference}" width="700px" height="500px" />
+							<p:outputLabel value="#{galleryView.galleryPic.description}"></p:outputLabel>
+							<h:panelGrid>
+								<p:separator />
+								<h:outputText value="Ihr Kommentar" />
+								<p:inputTextarea id="field1" maxlength="200" counter="display" rows="2" cols="75" value="#{commentService.commentString}" />
+								<h:outputText />
+
+								<p:outputLabel />
+								<h:panelGrid columns="2">
+									<h:outputText style="font-size:70%;" id="display" />
+									<h:outputText style="font-size:70%;" value=" Zeichen verbleiben" />
+
+								</h:panelGrid>
+								<p:commandButton value="Abschicken" update="selp field1" icon="ui-icon-circle-triangle-s" action="#{commentService.addComments(galleryView.galleryPic.pictureReference)}" />
+
+							</h:panelGrid>
+						</p:panelGrid>
+					</p:panel>
+
+					<p:dataScroller id="selp" value="#{commentService.loadComments(galleryView.galleryPic.pictureReference)}" var="comment" chunkSize="10">
+						<f:facet name="header">
+           		 	Kommentare
+        		</f:facet>
+
+						<f:facet name="loader">
+							<p:commandButton type="button" value="Mehr anzeigen" icon="ui-icon-circle-triangle-s" />
+						</f:facet>
+
+						<p:panelGrid style="width:100%">
+
+							<p:row>
+								<p:column style="width:230px">
+									<h:panelGrid columns="1">
+										<p:graphicImage alt="Image Description for #{galleryPicService.loadProfilePic().pictureReference}" value="../../../../#{galleryPicService.loadProfilePic().pictureReference}" width="70px"
+											height="70px" />
+										<p:outputLabel value="#{userRepository.findFirstByUsername(comment.username).username}"></p:outputLabel>
+										<p:outputLabel value="#{comment.date}">
+											<f:convertDateTime pattern="dd.MM.yyyy hh:mm" />
+											</p:outputLabel>
+									</h:panelGrid>
+								</p:column>
+								<p:column>
+									<p:outputLabel value="#{comment.comment}" />
+								</p:column>
+							</p:row>
+
+						</p:panelGrid>
+					</p:dataScroller>
+
+
+				</h:form>
+
+
+
+
+			</div>
+		</h:body>
+	</ui:define>
+</ui:composition>

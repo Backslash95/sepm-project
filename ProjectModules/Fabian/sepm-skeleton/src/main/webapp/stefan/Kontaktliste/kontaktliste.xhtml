@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:head></h:head>
+		<h:body>
+			<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+			<h:form>
+				<p:panel header="Kontaktliste">
+					<p:dataTable var="parent" value="#{contactListController.loadParentContactList()}">
+					    <p:column headerText="Eltern">
+					        <h:outputText value="#{parent.firstName} #{parent.lastName}" />
+					    </p:column>
+					 
+					    <p:column headerText="Kinder">
+					        <h:outputText value="#{contactListController.convertChildTable(parent.childSetUser)}" />
+					    </p:column>
+					 
+					    <p:column headerText="Phone">
+					        <h:outputText value="#{parent.phone}" />
+					    </p:column>
+					 
+					    <p:column headerText="E-Mail">
+					        <h:outputText value="#{parent.email}" />
+					    </p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>

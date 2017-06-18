@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+	
+					    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+   
+		<h:form id="newTaskPage">
+			
+			<p:panel header="Meine Aufgaben" style="margin-bottom:20px" rendered="#{sessionInfoBean.hasRole('PARENT')}">
+				<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="taskTable2" var="task" value="#{taskService.findMyTasks()}">
+					<p:column headerText="Aufgabe">
+						<h:outputText value="#{task.name}" />
+					</p:column>
+					<p:column headerText="Zu erledigen bis">
+						<h:outputText value="#{task.deadline}" />
+										<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Anzahl Personen">
+						<h:outputText value="#{task.amountOfWorkers}" />
+					</p:column>
+					<p:column headerText="Info" style="width:80px;text-align:center">
+						<p:commandButton style="margin-top:10px" icon="ui-icon-help" class="ui-button1" update="newTaskPage" action="#{taskHandler.setSelectedTask(task)}" oncomplete="PF('taskinfo2').show();" />
+					</p:column>
+				</p:dataTable>
+
+				<p:dialog widgetVar="taskinfo2" header="#{taskHandler.selectedTask.name}" showEffect="clip" hideEffect="clip" width="600">
+					<p:panel header="Info">
+					<h:outputText value="#{taskHandler.selectedTask.description}" />
+						<p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="taskTable3" var="users" value="#{taskHandler.selectedTask.userSet}">
+
+							<p:column headerText="Name">
+								<h:outputText value="#{users.firstName} #{users.lastName}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:panel>
+				</p:dialog>
+
+			</p:panel>
+
+		</h:form>
+		
+
+    
+        		</div>
+</h:body>
+	</ui:define>
+</ui:composition>

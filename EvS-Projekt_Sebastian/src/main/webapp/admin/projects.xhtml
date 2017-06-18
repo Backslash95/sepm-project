@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+				xmlns:f="http://java.sun.com/jsf/core"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui"
+				template="/WEB-INF/templates/main.xhtml">
+	<ui:define name ="content">
+		<h:form id="projectFormAdmin">
+			<!-- Data table to list all projects -->
+			<p:dataTable id="projectsTable" var="project" value="#{projectListController.projects}">
+				<p:column headerText="Project name">
+					<h:outputText value="#{project.projectName}"/>
+				</p:column>
+				<p:column headerText="PS Leader">
+					<h:outputText value="#{project.psleader.username}"/>
+				</p:column>
+				<p:column headerText="Create Date">
+					<h:outputText value="#{project.createDate}"/>
+				</p:column>
+				<p:column style="width:100px;texalign: center">
+					<!-- Project reassign button -->
+					<p:commandButton icon="ui-icon-circle-arrow-e"
+									 title="Reassign project"
+									 oncomplete="PF('reassignProjectDialog').show()">
+						<f:setPropertyActionListener value="#{project}" target="#{projectDetailController.project}" />
+					</p:commandButton>
+					<p:commandButton action="#{projectDetailController.doDeleteProject}"
+									 icon="ui-icon-trash"
+									 title="Delete"
+									 update=":projectFormAdmin:projectsTable">
+						<f:setPropertyActionListener value="#{project}" target="#{projectDetailController.project}" />
+						<p:confirm header="Confirmation"
+								   message="Are you sure that you want to delete this project? You cannot undo this operation."
+								   icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+			<!-- Confirm Dialog for project deletion -->
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="300">
+				<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			<!-- Create new project panel -->
+			<p:panel header="Create new project" rendered="#{sessionInfoBean.hasRole('ADMIN')}">
+				<div style="height:30px">
+					<p:commandButton value="Create" oncomplete="PF('projectNewDialog').show()" title="New"/>
+				</div>
+			</p:panel>
+			<!-- Dialog for create new projects -->
+			<p:dialog header="New Project" id="projectNewDialog" widgetVar="projectNewDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+				<p:outputPanel id="newProjectPanel" rendered="true">
+					<h:panelGrid columns="2">
+						<p:outputLabel for="newProjectname" value="Project name: " />
+						<p:inputText id="newProjectname" value="#{inputTextCacheBean.projectName}"/>
+			
+						<p:outputLabel for="psleader" value="PS Leader: " />
+						<p:selectOneMenu id="psleader" value="#{selectOneMenuAssignStudentToProject.psLeader}">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{selectOneMenuAssignStudentToProject.psLeaders}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="3">
+						<p:commandButton value="Save"
+										 action="projects.xhtml?faces-redirect=true"
+										 actionListener="#{projectService.createProject(selectOneMenuAssignStudentToProject.selectedPSLeader, inputTextCacheBean.projectName)}"
+										 oncomplete="PF('projectNewDialog').hide()"
+										 update=":projectFormAdmin:projectsTable"/>
+						<p:commandButton value="Abort" onclick="PF('projectNewDialog').hide()"/>
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+			<!-- Reassign project dialog -->
+			<p:dialog header="Reassign project"
+					  id="reassignProjectDialog"
+					  widgetVar="reassignProjectDialog"
+					  modal="true"
+					  showEffect="fade"
+					  hideEffect="fade"
+					  resizable="false">
+				<p:outputPanel id="reassignProject" rendered="true">
+					<h:panelGrid columns="3">
+						<p:outputLabel for="repsleader" value="PS Leader: " />
+						<p:selectOneMenu id="repsleader" value="#{selectOneMenuAssignStudentToProject.psLeader}">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{selectOneMenuAssignStudentToProject.psLeaders}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="2">
+						<p:commandButton value="Save"
+										 actionListener="#{projectDetailController.doReassignProjectToNewPSLeader(selectOneMenuAssignStudentToProject.selectedPSLeader)}"
+										 action="projects.xhtml?faces-redirect=true"
+										 oncomplete="PF('reassignProjectDialog').hide()"
+										 update=":projectFormAdmin:projectsTable">	 
+						</p:commandButton>				 
+						<p:commandButton value="Abort" onclick="PF('reassignProjectDialog').hide()"/>
+					</h:panelGrid>					
+				</p:outputPanel>
+			</p:dialog>	
+		</h:form>
+	</ui:define>
+</ui:composition>

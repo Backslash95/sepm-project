@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+<h:form>
+    <p:growl id="messages" showDetail="true" />
+ 
+ <h:panelGrid columnClasses="value">
+        
+        <p:schedule id="schedule" value="#{calendarView.eventModel}" widgetVar="myschedule" timeZone="GMT+1" locale="ger" >
+ 
+            <p:ajax event="dateSelect" listener="#{calendarView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+            <p:ajax event="eventSelect" listener="#{calendarView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+            <p:ajax event="eventMove" listener="#{calendarView.onEventMove}" update="messages" />
+            <p:ajax event="eventResize" listener="#{calendarView.onEventResize}" update="messages" />
+ 
+        </p:schedule>
+ </h:panelGrid>
+    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+        <h:panelGrid id="eventDetails" columns="2">
+            <p:outputLabel for="title" value="Bezeichnung:" />
+            <p:inputText id="title" value="#{calendarView.event.title}" required="true" />
+ 
+            <p:outputLabel for="from" value="Von:" />
+            <p:calendar id="from" value="#{calendarView.event.startDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+ 
+            <p:outputLabel for="to" value="Bis:" />
+            <p:calendar id="to" value="#{calendarView.event.endDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+ 
+            <p:outputLabel for="allDay" value="Ganzer Tag:" />
+            <h:selectBooleanCheckbox id="allDay" value="#{calendarView.event.allDay}" />
+ 
+            <p:commandButton type="reset" value="Zurücksetzen" />
+            <p:commandButton id="addButton" value="Save" actionListener="#{calendarView.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+        </h:panelGrid>
+    </p:dialog>    
+</h:form>
+
+<script type="text/javascript">
+    PrimeFaces.locales['ger'] = {
+        closeText: 'schließen',
+        prevText: 'zurück',
+        nextText: 'weiter',
+        currentText: 'heute',
+        monthNames: ['Jänner','Februar','März','April','Mai','Juni',
+            'Juli','August','September','Oktober','November','Dezember'],
+        monthNamesShort: ['Jan','Feb','Mar','Apr','Mai','Jun','Jul',
+            'Aug','Sept','Okt','Nov','Dez'],
+        dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+        dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+        dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+        weekHeader: 'Wo',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        month: 'Monat',
+        week: 'Woche',
+        day: 'Tag',
+        allDayText : 'Ganzer Tag'
+    };
+</script>
+
+<style type="text/css">
+    .value {
+        width: 1000px;
+    }
+</style>
+	</ui:define>
+</ui:composition>
+

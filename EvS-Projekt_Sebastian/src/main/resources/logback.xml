@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  	<include resource="org/springframework/boot/logging/logback/base.xml"/>
+  	
+  	<!-- Alle Logs mit Level >= INFO loggen -->
+  	<logger name="at.qe.sepm.skeleton.services" level="INFO"></logger>
+   
+  <!-- Nur Fehler auf Console und File schreiben -->
+  <!-- Während testen level="info" dann sieht man auf der Konsole beim starten mehr infos nach dem Testen wieder auf "error" setzen -->
+  <root level="info"></root>
+</configuration>

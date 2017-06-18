@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/main.xhtml">
+    <ui:define name ="content">
+    				    			<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+    
+
+        <h:form id="logForm">
+            <p:dataTable emptyMessage="Es wurden keine Daten gefunden." id="usersTable" var="log" value="#{logController.logs}">
+                <p:column headerText="Timestamp" style="width:280px">
+                    <h:outputText value="#{log.timestamp}"/>
+                </p:column>
+                <p:column headerText="User" style="width:280px">
+                    <h:outputText value="#{log.user}"/>
+                </p:column>
+                <p:column headerText="Message">
+                    <h:outputText value="#{log.message}"/>
+           		</p:column>
+            </p:dataTable>
+       
+        </h:form>
+         <p:panel>
+        <a href="/download.do">Download whole log file</a>
+        </p:panel>
+
+    
+        		</div>
+</h:body>
+    </ui:define>
+</ui:composition>

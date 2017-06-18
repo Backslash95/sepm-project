@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:body>
+						
+			<h:outputStylesheet library="css" name="styles.css" />
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+	<style type="text/css">
+.something {
+	position: absolute;
+	height: 200px;
+	width: 400px;
+	margin: -100px 0 0 -200px;
+	top: 40%;
+	left: 50%;
+}
+</style>
+			<div class="something">
+				
+					<p:dialog header="Fehlerhaffter Login" resizable="false" global="true" dynamic="true" showEffect="fade" hideEffect="fade" visible="#{param.error!=null}" modal="true">
+						<p:outputLabel  value="Bitte stellen Sie sicher, dass die eingegebenen Daten korrekt sind!" />
+						
+						<p:separator />
+						
+					</p:dialog>
+				
+
+				<p:panel style="width:420px;">
+					<h2>Login</h2>
+					<p:separator />
+
+					<form id="login_form" action="#{request.contextPath}/login" method="post">
+						<h:panelGrid columns="2" style="padding-top:20px;padding-bottom:20px;">
+							<p:outputLabel for="username" value="Benutzername: " />
+							<p:inputText id="username" type="text" required="true" />
+							<p:outputLabel for="password" value="Passwort:" />
+							<p:inputText id="password" type="password" required="true" />
+						</h:panelGrid>
+
+						<p:separator />
+						
+							<button type="submit" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only">
+								<span class="ui-button-text">Login</span>
+							</button>
+						
+						
+					</form>
+				</p:panel>
+			</div>
+							
+		</h:body>
+	</ui:define>
+</ui:composition>

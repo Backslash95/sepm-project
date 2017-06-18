@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:ng="http://xmlns.jcp.org/jsf/passthrough" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<h:body>
+	<div style="width:95%;margin-left:auto; margin-right:auto;">
+    <h:outputStylesheet library="css" name="styles.css" />
+		<p:panel>
+		<h:form id="cal">
+			<p:growl id="messages" style="text-align:center;" showDetail="false" />
+
+			<h:panelGrid style=" margin: 0 auto;" columnClasses="value">
+				<p:schedule id="schedule" style="align:center;"  value="#{calendarController.lazyEventModel}" widgetVar="myschedule" timeZone="GMT+1" locale="ger" draggable="false" resizable="false" weekNumberCalculation="local">
+
+					<p:ajax event="dateSelect" listener="#{calendarController.onDateSelect}" update="cal1:eventDetails cal1 cal1:from2 cal2 cal3 cal2:eventDetails2" oncomplete="PF('eventDialog0').show();" />
+					<p:ajax event="eventSelect" listener="#{calendarController.onEventSelect}" update="cal1:eventDetails cal1 cal2 cal3 cal3:eventDetails3" oncomplete="PF('eventDialog3').show();" />
+
+				</p:schedule>
+			</h:panelGrid>
+			<p:dialog widgetVar="eventDialog0" header="Aktion auswählen" showEffect="clip" modal="true" hideEffect="clip">
+				<p:commandButton oncomplete="PF('eventDialog').show();PF('eventDialog0').hide();" value="Feiertag" />
+				<p:commandButton oncomplete="PF('eventDialog2').show();PF('eventDialog0').hide();" value="Belegung">
+				
+				</p:commandButton>
+			</p:dialog>
+			
+			</h:form>
+			
+	<h:form id="cal1">					
+
+			<p:dialog widgetVar="eventDialog" header="Details" showEffect="clip" hideEffect="clip">
+			<p:ajax event="close" update="cal1" resetValues="true" />
+				<h:panelGrid columns="3" id="eventDetails">
+					<p:outputLabel for="title" value="Bezeichnung:" />
+					<p:inputText id="title" value="#{calendarController.event.title}" required="false"/>
+					<p:message for="title" />
+					
+					<p:outputLabel for="from2" value="Von:" />
+					<p:calendar id="from2" value="#{calendarController.event.startDate}" pattern="dd/MM/yyyy" required="true" requiredMessage="Datum erforderlich!"/>
+					<p:message for="from2" />
+					
+					<p:outputLabel for="to2" value="Bis:" />
+					<p:calendar id="to2" value="#{calendarController.event.endDate}" pattern="dd/MM/yyyy" required="true" requiredMessage="Datum erforderlich!"/>
+					<p:message for="to2" />
+
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="2" style="width:100%">
+					<p:commandButton type="reset" value="Zurücksetzen" />
+					<p:commandButton id="addButton"
+					value="Speichern"
+					actionListener="#{calendarController.addDay(false)}"
+					oncomplete="PF('myschedule').update();if (!args.validationFailed){PF('eventDialog').hide()}"
+					update="cal:messages" />
+					</h:panelGrid>
+			</p:dialog>
+		</h:form>
+		<h:form id="cal2">
+			<p:dialog widgetVar="eventDialog2" id="eventDialog2p" header="Details" showEffect="clip" hideEffect="clip" >
+			<p:ajax event="close" update="cal2" resetValues="true" />
+				<h:panelGrid columns="3" id="eventDetails2">
+					<p:outputLabel for="title1" value="Maximale Anzahl der Kinder:" />
+					<p:inputText id="title1" value="#{calendarController.day.maxOccupation}" required="true" requiredMessage="Anzahl erforderlich!">
+						<f:validateLongRange minimum="0" />
+					</p:inputText>
+					<p:message for="title1" />
+
+					<p:outputLabel for="from" value="Von:" />
+					<p:calendar id="from" value="#{calendarController.event.startDate}" pattern="dd/MM/yyyy" required="true" requiredMessage="Datum erforderlich!"/>
+					<p:message for="from" />
+					
+					<p:outputLabel for="to" value="Bis:" />
+					<p:calendar id="to" value="#{calendarController.event.endDate}" pattern="dd/MM/yyyy" required="true" requiredMessage="Datum erforderlich!"/>
+					<p:message for="to" />					
+					</h:panelGrid>
+					<p:separator />
+					<h:panelGrid columns="2" style="width:100%">
+					<p:commandButton type="reset" value="Zurücksetzen" />
+					<p:commandButton value="Speichern" 
+					actionListener="#{calendarController.addDay(true)}" 
+					oncomplete="PF('myschedule').update();if (!args.validationFailed){ PF('eventDialog2').hide()}" 
+					update="title1 cal:messages" >
+					</p:commandButton>
+					</h:panelGrid>
+			</p:dialog>
+
+		</h:form>
+
+		<h:form id="cal3">
+			<p:dialog widgetVar="eventDialog3" header="Event Details" showEffect="clip" hideEffect="clip">
+				<h:panelGrid columns="2" id="eventDetails3">
+					<p:outputLabel for="title1" value="Maximale Anzahl der Kinder:" />
+					<p:outputLabel  id="title1" value="#{calendarController.day.maxOccupation}" />
+
+					<p:outputLabel for="from3" value="Von:" />
+					<p:outputLabel disabled="true" id="from3" value="#{calendarController.event.startDate}" pattern="dd/MM/yyyy" />
+
+					<p:outputLabel for="to3" value="Bis:" />
+					<p:outputLabel disabled="true" id="to3" value="#{calendarController.event.endDate}" pattern="dd/MM/yyyy" />
+					</h:panelGrid>
+				<p:separator />
+				<p:commandButton actionListener="#{calendarController.removeEvent}" oncomplete="PF('myschedule').update();PF('eventDialog3').hide();" value="Löschen" />
+			</p:dialog>
+
+		</h:form>
+		
+	
+
+
+		<script type="text/javascript">
+			PrimeFaces.locales['ger'] = {
+				closeText : 'schließen',
+				prevText : 'zurück',
+				nextText : 'weiter',
+				currentText : 'heute',
+				monthNames : [ 'Jänner', 'Februar', 'März', 'April', 'Mai',
+						'Juni', 'Juli', 'August', 'September', 'Oktober',
+						'November', 'Dezember' ],
+				monthNamesShort : [ 'Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun',
+						'Jul', 'Aug', 'Sept', 'Okt', 'Nov', 'Dez' ],
+				dayNames : [ 'Sonntag', 'Montag', 'Dienstag', 'Mittwoch',
+						'Donnerstag', 'Freitag', 'Samstag' ],
+				dayNamesShort : [ 'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa' ],
+				dayNamesMin : [ 'So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa' ],
+				weekHeader : 'Wo',
+				firstDay : 1,
+				isRTL : false,
+				showMonthAfterYear : false,
+				yearSuffix : '',
+				month : 'Monat',
+				week : 'Woche',
+				day : 'Tag',
+				allDayText : 'Ganzer Tag'
+			};
+		</script>
+
+		<style type="text/css">
+.value {
+	width: 1000px;
+}
+</style>
+</p:panel>
+</div>
+</h:body>
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/templates/main.xhtml">
+	<ui:define name="content">
+		<style type="text/css">
+
+</style>
+		<h:body>
+
+			<div style="width: 95%; margin-left: auto; margin-right: auto;">
+				<h:outputStylesheet library="css" name="styles.css" />
+
+
+				<!-- when css file added include this at this position: <h:outputStylesheet library="css" name="styles.css" /> -->
+				<h:form>
+						<p:panel id="ParentPanelEmployee" rendered="#{sessionInfoBean.hasRole('EMPLOYEE')}" header="Liste aller Eltern">
+						<p:dataList type="unordered" itemType="none" emptyMessage="Es wurden keine Daten gefunden." id="parent" var="parent" styleClass="table" value="#{parentUIManager.loadParentList()}">
+							<p:column headerText="Name des Elternteils">
+							<h:panelGrid columns="2">
+								<p:outputLabel styleClass="ui-icon ui-icon-script" style="float:right;margin-left:2px;" />
+								<p:commandLink id="nonAjax" actionListener="#{editParentController.setCurrentUser(parent)}" ajax="false">
+									<h:outputText value="#{parent.firstName} #{parent.lastName}" />
+								</p:commandLink>
+								</h:panelGrid>
+							</p:column>
+
+						</p:dataList>
+					</p:panel>
+				</h:form>
+
+			</div>
+		</h:body>
+	</ui:define>
+</ui:composition>
