@@ -1,5 +1,0 @@
-anlegen neue Eltern -> Kinderkrippenpersonal
-anlegen neue Kinder -> Kinderkrippenpersonal
-Einsicht Kinderstammblatt: aktive Eltern und Kinderkrippenpersonal
-Einsicht Kontaktliste: Kinderkrippenpersonal
-Parent Daten ändern -> Eltern
